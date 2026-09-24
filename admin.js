@@ -456,9 +456,18 @@ document.querySelectorAll(".tabs button").forEach(btn => {
 });
 
 async function loadJson(path, fallback) {
-  const res = await fetch(path, { cache: "no-cache" });
-  if (!res.ok) return fallback;
-  return res.json();
+  const urls = [
+    `https://raw.githubusercontent.com/wolfgamesfx-web/krenak/preview/${path}?t=${Date.now()}`,
+    `${path}?t=${Date.now()}`
+  ];
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) continue;
+      return await res.json();
+    } catch { /* prueba la siguiente */ }
+  }
+  return fallback;
 }
 
 async function loadLocal() {
@@ -528,7 +537,14 @@ async function rememberLocal() {
   await idbSet("bundle", { site, people, gallery, videos, savedAt: Date.now() });
 }
 
-async function persist() {
+let persistChain = Promise.resolve();
+
+function persist() {
+  persistChain = persistChain.then(runPersist, runPersist);
+  return persistChain;
+}
+
+async function runPersist() {
   readSiteForm();
   publishBtn.disabled = true;
   try {
