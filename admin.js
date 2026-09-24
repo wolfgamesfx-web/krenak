@@ -1,4 +1,5 @@
 const REPO = "wolfgamesfx-web/krenak";
+const BRANCH = "preview";
 const TOKEN_KEY = "yy_admin_token";
 
 const statusEl = document.getElementById("status");
@@ -44,8 +45,31 @@ function token() {
   return sessionStorage.getItem(TOKEN_KEY) || "";
 }
 
+function krenakDb() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open("krenak", 1);
+    req.onupgradeneeded = () => {
+      if (!req.result.objectStoreNames.contains("kv")) req.result.createObjectStore("kv");
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function idbSet(key, value) {
+  return krenakDb().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction("kv", "readwrite");
+    tx.objectStore("kv").put(value, key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  }));
+}
+
 async function gh(path, options = {}) {
-  const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+  const method = (options.method || "GET").toUpperCase();
+  const url = new URL(`https://api.github.com/repos/${REPO}/contents/${path}`);
+  if (method === "GET") url.searchParams.set("ref", BRANCH);
+  const res = await fetch(url, {
     ...options,
     headers: {
       Accept: "application/vnd.github+json",
@@ -361,6 +385,7 @@ document.getElementById("editor-form").addEventListener("submit", (e) => {
   else people.push(entry);
   document.getElementById("editor").close();
   renderPeople();
+  persist();
 });
 
 document.getElementById("editor-cancel").onclick = () => document.getElementById("editor").close();
@@ -439,8 +464,7 @@ async function connect() {
   const value = tokenInput.value.trim();
   if (value) sessionStorage.setItem(TOKEN_KEY, value);
   if (!token()) {
-    setStatus("Sin token: podés preparar todo acá. Publicar pide un token con permiso de escritura.", "err");
-    publishBtn.disabled = true;
+    setStatus("Sin token igual podés guardar: se ve en este navegador. El token hace falta para que lo vean los demás.", "err");
     return;
   }
   setStatus("Conectando…");
@@ -467,7 +491,8 @@ async function uploadDataUrl(dataUrl, name) {
     method: "PUT",
     body: JSON.stringify({
       message: "Sube imagen del sitio",
-      content: match[2]
+      content: match[2],
+      branch: BRANCH
     })
   });
   shas[path] = saved.content && saved.content.sha;
@@ -479,10 +504,30 @@ async function materialize(value, name) {
   return value;
 }
 
-async function publish() {
+async function rememberLocal() {
+  await idbSet("bundle", { site, people, gallery, videos, savedAt: Date.now() });
+}
+
+async function persist() {
   readSiteForm();
+  publishBtn.disabled = true;
+  try {
+    await rememberLocal();
+    if (!token()) {
+      setStatus("Quedó guardado en esta computadora. Abrí la página en este mismo navegador y ya se ve. Para que lo vean los demás, pegá el token arriba, tocá Conectar y volvé a guardar.", "err");
+      return;
+    }
+    await publish();
+  } catch (err) {
+    setStatus(err.message || "No se pudo guardar", "err");
+  } finally {
+    publishBtn.disabled = false;
+  }
+}
+
+async function publish() {
   if (!token()) {
-    setStatus("Falta el token de GitHub para publicar.", "err");
+    setStatus("Falta el token de GitHub para que lo vean los demás.", "err");
     return;
   }
   publishBtn.disabled = true;
@@ -501,7 +546,8 @@ async function publish() {
     await saveFile("gallery.json", JSON.stringify(gallery, null, 2) + "\n", "Actualiza galeria");
     await saveFile("videos.json", JSON.stringify(videos, null, 2) + "\n", "Actualiza videos");
     fillSiteForm();
-    setStatus("Publicado. La página se actualiza en uno o dos minutos.", "ok");
+    await rememberLocal();
+    setStatus("Guardado. La página ya lo muestra en este navegador y en uno o dos minutos lo ven todos.", "ok");
   } catch (err) {
     setStatus(err.message || "No se pudo publicar", "err");
   } finally {
@@ -518,7 +564,7 @@ async function saveFile(path, text, message) {
       shas[path] = undefined;
     }
   }
-  const body = { message, content: b64utf8(text) };
+  const body = { message, content: b64utf8(text), branch: BRANCH };
   if (shas[path]) body.sha = shas[path];
   const saved = await gh(path, { method: "PUT", body: JSON.stringify(body) });
   shas[path] = saved.content && saved.content.sha;
@@ -527,7 +573,7 @@ async function saveFile(path, text, message) {
 document.getElementById("connect").onclick = () => {
   connect().catch(err => setStatus(err.message || "No conectó", "err"));
 };
-document.getElementById("publish").onclick = () => publish();
+document.getElementById("publish").onclick = () => persist();
 document.getElementById("import-legacy").onclick = async () => {
   const res = await fetch("data.legacy.json", { cache: "no-cache" });
   if (!res.ok) {
@@ -550,6 +596,6 @@ loadLocal().then(() => {
     publishBtn.disabled = false;
     setStatus("Token de esta pestaña listo. Conectá si querés traer lo último de GitHub.");
   } else {
-    setStatus("Editá lo que quieras. Para publicarlo hace falta un token de GitHub con permiso de escritura.");
+    setStatus("Subí lo que quieras y tocá Guardar en la página. En este navegador se ve al instante.");
   }
 }).catch(err => setStatus(err.message || "No se pudo leer la config", "err"));

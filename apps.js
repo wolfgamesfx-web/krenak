@@ -14,6 +14,42 @@
       ]
     };
     const FALLBACK_AVATAR = 'img/logo.svg';
+
+    function krenakDb() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open("krenak", 1);
+        req.onupgradeneeded = () => { if (!req.result.objectStoreNames.contains("kv")) req.result.createObjectStore("kv"); };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    function idbGet(key) {
+      return krenakDb().then(db => new Promise((resolve, reject) => {
+        const tx = db.transaction("kv", "readonly");
+        const req = tx.objectStore("kv").get(key);
+        req.onsuccess = () => resolve(req.result ?? null);
+        req.onerror = () => reject(req.error);
+      })).catch(() => null);
+    }
+
+    async function fetchJson(path) {
+      const urls = [
+        `https://raw.githubusercontent.com/wolfgamesfx-web/krenak/preview/${path}?t=${Date.now()}`,
+        path
+      ];
+      let last = null;
+      for (const url of urls) {
+        try {
+          const res = await fetch(url, { cache: "no-store" });
+          if (!res.ok) { last = res.status; continue; }
+          return await res.json();
+        } catch (err) {
+          last = err;
+        }
+      }
+      throw new Error(String(last || path));
+    }
     const rankLabel = v => RANKS[String(v)] ?? "-";
     const norm = s => (s || "").toString().normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase();
     const debounce = (fn, ms=200) => { let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; };
@@ -903,14 +939,19 @@
       if (siteLoadPromise) return siteLoadPromise;
       siteLoadPromise = (async () => {
         try {
-          const res = await fetch("site.json", { cache: "no-cache" });
-          if (!res.ok) return;
-          const site = await res.json();
+          const site = await fetchJson("site.json");
           SITE = { ...SITE, ...site };
-          applySite(SITE);
         } catch (e) {
           console.error("Error cargando site.json", e);
         }
+        try {
+          const bundle = await idbGet("bundle");
+          window.__krenakBundle = bundle || null;
+          if (bundle?.site) SITE = { ...SITE, ...bundle.site };
+        } catch {
+          window.__krenakBundle = null;
+        }
+        applySite(SITE);
       })();
       return siteLoadPromise;
     }
@@ -931,9 +972,8 @@
       try {
         setHomeLiveLoading(true);
         await loadSite();
-        const res = await fetch('data.json');
-        if (!res.ok) throw new Error(`No se pudieron cargar los datos (HTTP ${res.status})`);
-        const json = await res.json();
+        const bundledPeople = window.__krenakBundle?.people;
+        const json = Array.isArray(bundledPeople) ? bundledPeople : await fetchJson('data.json');
         DATA = sanitizeCharacters(Array.isArray(json) ? json : []);
         document.dispatchEvent(new CustomEvent('yy:data-ready'));
         // Kick real antes del primer render (live.json suele estar desactualizado)
@@ -1586,9 +1626,9 @@
       }
     
       try {
-        const r = await fetch('gallery.json', { cache: 'no-cache' });
-        if (!r.ok) throw new Error('gallery.json no encontrado');
-        YY_GALLERY = await r.json();
+        await loadSite();
+        const bundledGallery = window.__krenakBundle?.gallery;
+        YY_GALLERY = Array.isArray(bundledGallery) ? bundledGallery : await fetchJson('gallery.json');
     
         const html = YY_GALLERY.map((i, idx) => {
           const id = driveIdFrom(i.src) || i.id;
@@ -1860,9 +1900,9 @@
         return VIDEOS_CACHE.items;
       }
       try {
-        const r = await fetch('videos.json', { cache: 'no-cache' });
-        if (!r.ok) return VIDEOS_CACHE.items;
-        const items = await r.json();
+        await loadSite();
+        const bundledVideos = window.__krenakBundle?.videos;
+        const items = Array.isArray(bundledVideos) ? bundledVideos : await fetchJson('videos.json');
         VIDEOS_CACHE = {
           t: now,
           items: (Array.isArray(items) ? items : [])
