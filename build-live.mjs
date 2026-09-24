@@ -146,8 +146,12 @@ async function main() {
   const slugs = [...new Set(
     data
       .filter(x => Number(x?.activo ?? 1) !== 0)
-      .map(x => (x?.kick ? String(x.kick).trim().toLowerCase() : ""))
-      .filter(Boolean)
+      .map(x => {
+        const raw = x?.kick ? String(x.kick).trim() : "";
+        const fromUrl = raw.match(/kick\.com\/([^/?#]+)/i);
+        return (fromUrl ? fromUrl[1] : raw).replace(/^@/, "").trim().toLowerCase().split("/")[0];
+      })
+      .filter(s => s && !s.includes(".") && !s.includes(":"))
   )];
 
   console.log(`[info] ${slugs.length} slugs Kick encontrados.`);

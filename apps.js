@@ -72,10 +72,17 @@
         .replace(/&#39;/g, "'");
     }
 
+    function kickSlug(value) {
+      const raw = String(value || "").trim();
+      if (!raw) return "";
+      const fromUrl = raw.match(/kick\.com\/([^/?#]+)/i);
+      const slug = (fromUrl ? fromUrl[1] : raw).replace(/^@/, "").trim().toLowerCase();
+      return slug.split("/")[0];
+    }
+
     function isValidKickSlug(kick) {
-      if (!kick) return false;
-      const s = String(kick).trim().toLowerCase();
-      return s.length > 0 && !/^x+$/i.test(s);
+      const s = kickSlug(kick);
+      return s.length > 0 && !/^x+$/i.test(s) && !s.includes(".") && !s.includes(":");
     }
 
     function isCharacterActive(p) {
@@ -102,7 +109,7 @@
       const alias = (raw.alias || '').trim();
       const ooc = (raw.ooc || '').trim();
       const rango = Number(raw.rango ?? raw.rank);
-      const kickRaw = raw.kick ? String(raw.kick).trim().toLowerCase() : undefined;
+      const kickRaw = kickSlug(raw.kick);
       const kick = isValidKickSlug(kickRaw) ? kickRaw : undefined;
       const foto = (raw.foto || '').trim() || FALLBACK_AVATAR;
       const links = normalizeLinks(raw.links);
