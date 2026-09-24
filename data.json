@@ -28,5 +28,15 @@
     "foto": "img/uploads/persona-3-1790290320162.jpg",
     "activo": 1,
     "links": []
+  },
+  {
+    "nombre": "Kraven Beishak",
+    "ooc": "",
+    "alias": "ShotByWolf",
+    "kick": "shotbywolf",
+    "rango": 2,
+    "foto": "img/uploads/persona-4-1790290355327.jpg",
+    "activo": 1,
+    "links": []
   }
 ]
