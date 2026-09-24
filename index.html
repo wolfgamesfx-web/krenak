@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://player.kick.com">
   <link rel="preload" as="image" href="img/wallpaper.webp" type="image/webp">
 </head>
-<body>
+<body class="krenak">
   <header class="site-header">
     <div class="header-inner">
       <button type="button" data-goto="inicio" class="wordmark" id="site-name">KRENAK</button>
@@ -36,7 +36,7 @@
         <button class="tab" data-view="videos">Videos</button>
         <button class="tab" data-view="lore">Lore</button>
         <button class="tab" data-view="multikick">Multikick</button>
-        <a id="header-kick" class="kick-cta" href="https://kick.com" target="_blank" rel="noreferrer">Ver en Kick</a>
+        <a id="header-kick" class="kick-cta" href="https://kick.com" target="_blank" rel="noreferrer"><span class="kick-mark">K</span> Ver en Kick</a>
       </nav>
     </div>
   </header>
@@ -45,6 +45,7 @@
     <section class="hero">
       <img class="hero-bg" src="img/wallpaper.webp" alt="" />
       <div class="hero-shade"></div>
+      <div class="hero-grain" aria-hidden="true"></div>
       <div class="hero-copy">
         <p id="hero-kicker" class="kicker">DOVUX LIFE RP / DIGITAL SYNDICATE</p>
         <h1 id="hero-title">KRENAK</h1>
@@ -55,9 +56,10 @@
         </div>
       </div>
       <div class="stamp"><span>EST. 2024</span><strong>KRK</strong><span>FAMILIA</span></div>
+      <a class="scroll-cue" href="#en-vivo">Scroll</a>
     </section>
 
-    <section class="block">
+    <section class="block" id="en-vivo">
       <div class="block-head">
         <div>
           <p class="eyebrow">Ahora mismo</p>
@@ -193,14 +195,23 @@
         <span id="mk-count"></span>
         <button id="mk-full" type="button" class="btn-ghost">Pantalla</button>
       </div>
-      <div id="mk-grid" class="mk-grid"></div>
+      <div class="mk-stage">
+        <div id="mk-grid" class="mk-grid"></div>
+        <div class="mk-standby" aria-hidden="true">
+          <div><strong>XXXXX</strong><span>SEÑAL ACTIVA / iframe Kick configurable</span></div>
+          <div><strong>XXXXX</strong><span>SEÑAL ACTIVA / iframe Kick configurable</span></div>
+        </div>
+      </div>
     </section>
   </div>
 
   <footer class="site-foot">
-    <strong data-site-name>KRENAK</strong>
-    <span>Territorio, familia y señal.</span>
+    <div>
+      <strong data-site-name>KRENAK</strong>
+      <span>Territorio, familia y señal.</span>
+    </div>
     <span id="site-subtitle" class="hidden">DOVUX LIFE RP</span>
+    <span class="foot-mid">Kick · Demanded en X</span>
     <small>© 2026 KRENAK / DOVUX LIFE RP</small>
   </footer>
 

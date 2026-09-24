@@ -953,13 +953,13 @@
             <span class="char-rank-badge absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wide bg-black/55 text-yakuza border border-yakuza/35 backdrop-blur-sm">
               ${escapeHtml(rankLabel(p.rango))}
             </span>
-            <div class="absolute bottom-0 inset-x-0 p-3">
-              ${p.alias ? `<p class="char-alias">${escapeHtml(p.alias)}</p>` : ''}
-              <h3 class="char-name">${escapeHtml(p.nombre)}</h3>
-              <p class="char-ooc">${escapeHtml(p.ooc || '—')}</p>
-            </div>
           </div>
-          ${actionsHtml ? `<div class="p-3">${actionsHtml}</div>` : ''}
+          <div class="char-meta">
+            ${p.alias ? `<p class="char-alias">${escapeHtml(p.alias)}</p>` : ''}
+            <h3 class="char-name">${escapeHtml(p.nombre)}</h3>
+            <p class="char-ooc">${escapeHtml(p.ooc || '—')}</p>
+            ${actionsHtml}
+          </div>
         </article>
       `;
     }
@@ -1953,6 +1953,11 @@
       loreLoadPromise.catch(() => { loreLoadPromise = null; });
       return loreLoadPromise;
     }
+
+    const siteHeader = document.querySelector('.site-header');
+    const syncHeader = () => siteHeader?.classList.toggle('is-scrolled', window.scrollY > 12);
+    syncHeader();
+    window.addEventListener('scroll', syncHeader, { passive: true });
 
     // ===== Go! =====
     showView(viewFromHash(), { updateHash: false });
