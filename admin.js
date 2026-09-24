@@ -103,6 +103,12 @@ function decodeContent(file) {
   return JSON.parse(new TextDecoder().decode(bytes));
 }
 
+function kickSlug(value) {
+  const raw = String(value || "").trim();
+  const match = raw.match(/kick\.com\/([^/?#]+)/i);
+  return (match ? match[1] : raw).replace(/^@/, "").toLowerCase();
+}
+
 function escapeAttr(s) {
   return String(s ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 }
@@ -180,7 +186,7 @@ function renderRanks() {
     const row = document.createElement("div");
     row.className = "rank-row";
     row.innerHTML = `<input value="${escapeAttr(rank.label)}" /><button type="button" class="ghost">Quitar</button>`;
-    row.querySelector("button").onclick = () => row.remove();
+    row.querySelector("button").onclick = () => { row.remove(); persist(); };
     box.appendChild(row);
   });
 }
@@ -223,7 +229,7 @@ function loreRow(item = { year: "", title: "", body: "" }) {
       <button type="button" class="ghost">Quitar</button>
     </div>
     <label>Texto<textarea data-f="body">${escapeAttr(item.body)}</textarea></label>`;
-  row.querySelector("button").onclick = () => row.remove();
+  row.querySelector("button").onclick = () => { row.remove(); persist(); };
   return row;
 }
 
@@ -250,7 +256,7 @@ function galleryRow(item = { src: "", alt: "" }) {
     if (!file) return;
     row.querySelector("[data-f=src]").value = await fileToDataUrl(file);
   });
-  row.querySelector("button").onclick = () => row.remove();
+  row.querySelector("button").onclick = () => { row.remove(); persist(); };
   return row;
 }
 
@@ -275,7 +281,7 @@ function videoRow(item = { id: "", title: "", published: "", _channelName: "" })
       <label>Canal<input data-f="channel" value="${escapeAttr(item._channelName)}" /></label>
     </div>
     <button type="button" class="ghost">Quitar</button>`;
-  row.querySelector("button").onclick = () => row.remove();
+  row.querySelector("button").onclick = () => { row.remove(); persist(); };
   return row;
 }
 
@@ -302,6 +308,7 @@ function renderPeople() {
     row.querySelector("[data-del]").onclick = () => {
       people.splice(i, 1);
       renderPeople();
+      persist();
     };
     box.appendChild(row);
   });
@@ -381,7 +388,7 @@ document.getElementById("editor-form").addEventListener("submit", (e) => {
     nombre: form.nombre.value.trim(),
     ooc: form.ooc.value.trim(),
     alias: form.alias.value.trim(),
-    kick: form.kick.value.trim().toLowerCase(),
+    kick: kickSlug(form.kick.value),
     rango: Number(form.rango.value),
     foto: form.foto.value.trim(),
     activo: form.activo.checked ? 1 : 0,
@@ -390,9 +397,15 @@ document.getElementById("editor-form").addEventListener("submit", (e) => {
   if (!entry.nombre) return;
   if (editing >= 0) people[editing] = entry;
   else people.push(entry);
-  document.getElementById("editor").close();
+  const dialog = document.getElementById("editor");
+  if (dialog.open) dialog.close();
   renderPeople();
   persist();
+});
+
+document.getElementById("editor").addEventListener("click", (e) => {
+  const dialog = document.getElementById("editor");
+  if (e.target === dialog && dialog.open) dialog.close();
 });
 
 document.getElementById("editor-cancel").onclick = () => document.getElementById("editor").close();
