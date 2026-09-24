@@ -331,21 +331,39 @@ button, a { font: inherit; color: inherit; }
 .explore small { color: var(--muted); line-height: 1.4; }
 
 .roster, .videos, .gallery, .mk-grid { display: grid; gap: 14px; }
-.roster { grid-template-columns: repeat(5, 1fr); }
+.roster { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .krenak .char-card {
   background: #0e0e0e !important;
   border: 1px solid var(--line) !important;
   border-radius: 0 !important;
   overflow: hidden;
+  min-width: 0;
+  max-width: 100%;
   box-shadow: none;
   transition: transform .32s cubic-bezier(.16,1,.3,1), border-color .32s ease, box-shadow .32s ease;
+}
+.char-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #0a0a0a;
 }
 .krenak .char-card:hover {
   transform: translateY(-6px);
   border-color: rgba(225,6,0,.4) !important;
   box-shadow: 0 16px 40px rgba(0,0,0,.45);
 }
-.char-photo { filter: grayscale(1) contrast(1.08); width: 100%; height: 100%; object-fit: cover; }
+.char-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center top;
+  filter: grayscale(1) contrast(1.08);
+}
 .char-meta { padding: 12px 12px 14px; background: #101010; }
 .char-name {
   color: #fff !important;
@@ -708,7 +726,7 @@ button, a { font: inherit; color: inherit; }
     transform: none !important;
     animation: menu-in .28s ease;
   }
-  .explore, .roster, .videos, .mk-standby { grid-template-columns: 1fr 1fr; }
+  .explore, .roster, .videos, .mk-standby { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .gallery, .live-theater-grid, .lore-row, .block-head, .site-foot { grid-template-columns: 1fr; display: grid; }
   .stamp, .scroll-cue, .hero-corners { display: none; }
   .code-band ol { grid-template-columns: 1fr; }

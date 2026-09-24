@@ -1036,9 +1036,9 @@
       return `
         <article class="char-card scroll-reveal group rounded-xl overflow-hidden bg-neutral-900/50 border border-white/5 backdrop-blur-sm hover:border-yakuza/25${inactiveClass}"
                  data-char-key="${escapeHtml(p.kick || p.nombre)}"${p.kick ? ` data-kick="${escapeHtml(p.kick)}"` : ''}>
-          <div class="relative aspect-[3/4] overflow-hidden bg-neutral-950">
+          <div class="char-frame">
             <img src="${p.foto || FALLBACK_AVATAR}" alt="${p.nombre}"
-                 class="char-photo w-full h-full object-cover object-top" loading="lazy" decoding="async" />
+                 class="char-photo" loading="lazy" decoding="async" />
             <div class="char-card-overlay absolute inset-0"></div>
             <span class="char-rank-badge absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wide bg-black/55 text-yakuza border border-yakuza/35 backdrop-blur-sm">
               ${escapeHtml(rankLabel(p.rango))}
