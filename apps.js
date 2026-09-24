@@ -982,9 +982,13 @@
       try {
         setHomeLiveLoading(true);
         await loadSite();
-        const bundledPeople = window.__krenakBundle?.people;
-        const json = Array.isArray(bundledPeople) ? bundledPeople : await fetchJson('data.json');
-        DATA = sanitizeCharacters(Array.isArray(json) ? json : []);
+        let json = null;
+        try { json = await fetchJson('data.json'); } catch { json = null; }
+        if (!Array.isArray(json)) {
+          const bundledPeople = window.__krenakBundle?.people;
+          json = Array.isArray(bundledPeople) ? bundledPeople : [];
+        }
+        DATA = sanitizeCharacters(json);
         document.dispatchEvent(new CustomEvent('yy:data-ready'));
         // Kick real antes del primer render (live.json suele estar desactualizado)
         await bootstrapLiveStatus();
