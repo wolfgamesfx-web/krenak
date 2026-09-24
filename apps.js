@@ -1622,6 +1622,8 @@
         if (!dot) { dot = document.createElement('span'); dot.className='kick-dot inline-block w-2 h-2 rounded-full'; el.prepend(dot); }
         if (!label) { label = document.createElement('span'); label.className='kick-label'; el.appendChild(label); }
 
+        el.closest('.char-card')?.classList.toggle('is-live', state.live === true);
+
         if (state.live === true) {
           el.className = 'kick-btn is-live inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs';
           dot.className = 'kick-dot is-live inline-block w-2 h-2 rounded-full';
