@@ -1672,7 +1672,7 @@
         }).join('');
     
         const grid = document.getElementById('galeria-grid');
-        grid.innerHTML = html || '<p class="text-neutral-400">Sin imágenes.</p>';
+        grid.innerHTML = html || '<p class="empty">La galería está vacía. Las fotos del territorio se suman desde el panel.</p>';
         galleryLoaded = true;
         galleryLastFetch = now;
     
