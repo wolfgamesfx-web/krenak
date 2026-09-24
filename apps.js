@@ -41,7 +41,7 @@
       let last = null;
       for (const url of urls) {
         try {
-          const res = await fetch(url, { cache: "no-store" });
+          const res = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(6000) });
           if (!res.ok) { last = res.status; continue; }
           return await res.json();
         } catch (err) {
@@ -818,6 +818,9 @@
       });
       styleTabs(v);
       closeHeaderMenu();
+      if (window.scrollY > 48) {
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+      }
 
       if (updateHash && location.hash !== `#${v}`) {
         location.hash = v;
@@ -828,7 +831,7 @@
         stopHomeRotation();
         pauseHomePlayers();
       }
-      if (v === 'personajes' && DATA.length) { render(); }
+      if (v === 'personajes') { render(); }
       if (v === 'galeria') { loadGallery(); }
       if (v === 'videos') { loadVideos(); }
       if (v === 'lore') {
@@ -1220,7 +1223,13 @@
     }
 
     async function renderHome() {
-      if (!DATA.length) return;
+      if (!DATA.length) {
+        setHomeLiveLoading(false);
+        document.getElementById('home-live-theater')?.classList.add('hidden');
+        document.getElementById('home-live-empty')?.classList.remove('hidden');
+        document.getElementById('home-live-picker')?.classList.add('hidden');
+        return;
+      }
 
       const LIVE_MAP = await getLiveMap();
       setHomeLiveLoading(false);
@@ -1417,6 +1426,14 @@
 
         grid.innerHTML = hasActive ? active.list.map(renderCharacterCard).join('') : '';
         empty.classList.toggle('hidden', hasActive || hasInactive);
+        const rosterMeta = document.getElementById('roster-meta');
+        if (rosterMeta) {
+          const total = active.list.length + inactive.list.length;
+          const liveN = active.list.filter(p => p.kick && (LIVE_MAP.get(p.kick)?.live ?? false)).length;
+          rosterMeta.textContent = total
+            ? `${total} ${total === 1 ? 'nombre' : 'nombres'}${liveN ? ` · ${liveN} en vivo` : ''}`
+            : '';
+        }
 
         if (hasInactive) {
           inactivosSection?.classList.remove('hidden');
@@ -2040,9 +2057,20 @@
     }
 
     const siteHeader = document.querySelector('.site-header');
-    const syncHeader = () => siteHeader?.classList.toggle('is-scrolled', window.scrollY > 12);
+    const scrollProgress = document.getElementById('scroll-progress');
+    const toTop = document.getElementById('to-top');
+    const syncHeader = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+      siteHeader?.classList.toggle('is-scrolled', window.scrollY > 12);
+      if (scrollProgress) scrollProgress.style.transform = `scaleX(${progress})`;
+      toTop?.classList.toggle('is-on', window.scrollY > 640);
+    };
     syncHeader();
     window.addEventListener('scroll', syncHeader, { passive: true });
+    toTop?.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+    });
 
     // ===== Go! =====
     showView(viewFromHash(), { updateHash: false });

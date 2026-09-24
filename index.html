@@ -23,6 +23,7 @@
   <link rel="preload" as="image" href="img/wallpaper.webp" type="image/webp">
 </head>
 <body class="krenak">
+  <div class="scroll-progress" aria-hidden="true"><span id="scroll-progress"></span></div>
   <header class="site-header">
     <div class="header-inner">
       <img id="header-logo" class="header-mark" src="img/logo.svg" alt="" />
@@ -147,6 +148,7 @@
         </select>
         <button id="clear" type="button" class="btn-ghost">Limpiar</button>
       </div>
+      <p id="roster-meta" class="roster-meta"></p>
       <div id="grid" class="roster"></div>
       <p id="empty" class="empty hidden">Todavía no hay nombres en el bloque.</p>
       <div id="inactivos-section" class="hidden">
@@ -216,6 +218,7 @@
     <small>© 2026 KRENAK / DOVUX LIFE RP</small>
     <a class="foot-admin" href="admin.html">Panel</a>
   </footer>
+  <button type="button" id="to-top" class="to-top" aria-label="Volver arriba">Arriba</button>
 
   <div id="live-rotator" class="hidden rotator">
     <img id="live-rotator-avatar" alt="" />
