@@ -1,19 +1,19 @@
 ﻿    // ===== Utilidades =====
     let RANKS = { "1": "Jefe", "2": "Campera", "3": "Yakuza", "4": "Shatei" };
     let SITE = {
-      name: "YAKUZA",
+      name: "KRENAK",
       subtitle: "DOVUX LIFE RP",
       description: "",
       background: "img/wallpaper.webp",
-      logo: "img/logo.png",
+      logo: "img/logo.svg",
       ranks: [
         { id: 1, label: "Jefe" },
         { id: 2, label: "Campera" },
-        { id: 3, label: "Yakuza" },
+        { id: 3, label: "Krenak" },
         { id: 4, label: "Shatei" }
       ]
     };
-    const FALLBACK_AVATAR = 'img/logo.png';
+    const FALLBACK_AVATAR = 'img/logo.svg';
     const rankLabel = v => RANKS[String(v)] ?? "-";
     const norm = s => (s || "").toString().normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase();
     const debounce = (fn, ms=200) => { let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; };
@@ -845,7 +845,31 @@
       const desc = document.querySelector('meta[name="description"]');
       if (desc && site.description) desc.setAttribute("content", site.description);
       const logo = document.querySelector(".header-logo");
-      if (logo && site.logo) logo.src = site.logo;
+      const headerLogo = document.getElementById("header-logo");
+      const favicon = document.getElementById("site-favicon");
+      if (site.logo) {
+        if (logo) logo.src = site.logo;
+        if (headerLogo) headerLogo.src = site.logo;
+        if (favicon) favicon.href = site.logo;
+      }
+      const setText = (id, value) => {
+        const el = document.getElementById(id);
+        if (el && value) el.textContent = value;
+      };
+      setText("stamp-top", site.stampTop);
+      setText("stamp-mark", site.stampMark);
+      setText("stamp-bottom", site.stampBottom);
+      setText("live-note", site.liveNote);
+      setText("footer-line", site.footerLine);
+      setText("footer-mid", site.footerMid);
+      if (Array.isArray(site.explore)) {
+        site.explore.forEach(item => {
+          const title = document.querySelector(`[data-explore-title="${item.view}"]`);
+          const text = document.querySelector(`[data-explore-text="${item.view}"]`);
+          if (title && item.title) title.textContent = item.title;
+          if (text && item.text) text.textContent = item.text;
+        });
+      }
       const bg = document.querySelector(".fixed picture img");
       const source = document.querySelector(".fixed picture source");
       if (site.background) {
@@ -874,16 +898,32 @@
       }
     }
 
-    async function loadSite() {
-      try {
-        const res = await fetch("site.json", { cache: "no-cache" });
-        if (!res.ok) return;
-        const site = await res.json();
-        SITE = { ...SITE, ...site };
-        applySite(SITE);
-      } catch (e) {
-        console.error("Error cargando site.json", e);
-      }
+    let siteLoadPromise = null;
+    function loadSite() {
+      if (siteLoadPromise) return siteLoadPromise;
+      siteLoadPromise = (async () => {
+        try {
+          const res = await fetch("site.json", { cache: "no-cache" });
+          if (!res.ok) return;
+          const site = await res.json();
+          SITE = { ...SITE, ...site };
+          applySite(SITE);
+        } catch (e) {
+          console.error("Error cargando site.json", e);
+        }
+      })();
+      return siteLoadPromise;
+    }
+
+    function renderLoreHtml(items) {
+      return `<div class="lore-timeline">${items.map(it => `
+        <article class="lore-row">
+          <p class="lore-year">${escapeHtml(it.year || "")}</p>
+          <div>
+            <h3>${escapeHtml(it.title || "")}</h3>
+            <p>${escapeHtml(it.body || "")}</p>
+          </div>
+        </article>`).join("")}</div>`;
     }
 
     // ===== Data & render Personajes =====
@@ -1940,6 +1980,11 @@
 
       loreLoadPromise = (async () => {
         try {
+          await loadSite();
+          if (Array.isArray(SITE.lore) && SITE.lore.length) {
+            document.getElementById('lore-body').innerHTML = renderLoreHtml(SITE.lore);
+            return;
+          }
           const r = await fetch('lore.html', { cache: 'no-store' });
           if (!r.ok) throw new Error('lore.html no encontrado');
           const html = await r.text();

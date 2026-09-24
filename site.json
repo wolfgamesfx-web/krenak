@@ -6,11 +6,41 @@
   "kickUrl": "https://kick.com",
   "description": "KRENAK. Territorio, familia y señal en Dovux Life RP.",
   "background": "img/wallpaper.webp",
-  "logo": "img/logo.png",
+  "logo": "img/logo.svg",
+  "stampTop": "EST. 2024",
+  "stampMark": "KRK",
+  "stampBottom": "FAMILIA",
+  "liveNote": "La familia transmite desde el corazón de Dovux.",
+  "footerLine": "Territorio, familia y señal.",
+  "footerMid": "Kick · Demanded en X",
   "ranks": [
     { "id": 1, "label": "Jefe" },
     { "id": 2, "label": "Campera" },
     { "id": 3, "label": "Krenak" },
     { "id": 4, "label": "Shatei" }
+  ],
+  "explore": [
+    { "view": "personajes", "title": "Personajes", "text": "Conocé a quienes sostienen el código." },
+    { "view": "galeria", "title": "Galería", "text": "El archivo visual del territorio." },
+    { "view": "videos", "title": "Videos", "text": "Momentos que quedaron grabados." },
+    { "view": "lore", "title": "Lore", "text": "Todo empezó por una razón." },
+    { "view": "multikick", "title": "MultiKick", "text": "Varias señales, una familia." }
+  ],
+  "lore": [
+    {
+      "year": "2024",
+      "title": "EL ORIGEN",
+      "body": "Dovux todavía dormía cuando cinco nombres decidieron que el mapa no iba a repartirse solo. KRENAK nació en un garaje, entre motores calientes, radios rotas y una regla: la familia se cuida aunque el mundo cobre intereses."
+    },
+    {
+      "year": "2025",
+      "title": "EL ASCENSO",
+      "body": "La señal empezó a cruzar la ciudad. Cada directo era una ventana al territorio y cada calle, una promesa. No buscaban fama: buscaban control. La audiencia llegó después, atraída por una verdad que no se podía guionar."
+    },
+    {
+      "year": "HOY",
+      "title": "EL CÓDIGO",
+      "body": "KRENAK no es un logo ni una crew de paso. Es una forma de moverse: hablar poco, mirar dos veces y nunca dejar a uno atrás. En Dovux, todos conocen el color. Pocos conocen el precio."
+    }
   ]
 }

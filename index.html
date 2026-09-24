@@ -13,7 +13,7 @@
   <meta property="og:image" content="https://youngyakuza.reenz.site/img/logo.png" />
   <meta name="theme-color" content="#070707" />
   <meta name="robots" content="index, follow" />
-  <link rel="icon" href="img/logo.png" />
+  <link id="site-favicon" rel="icon" href="img/logo.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -25,6 +25,7 @@
 <body class="krenak">
   <header class="site-header">
     <div class="header-inner">
+      <img id="header-logo" class="header-mark" src="img/logo.svg" alt="" />
       <button type="button" data-goto="inicio" class="wordmark" id="site-name">KRENAK</button>
       <button type="button" id="header-menu-toggle" class="menu-btn" aria-expanded="false" aria-controls="header-nav" aria-label="Abrir menú">
         <span></span><span></span><span></span>
@@ -55,7 +56,7 @@
           <button type="button" class="btn-ghost" data-goto="lore">Conocer la historia</button>
         </div>
       </div>
-      <div class="stamp"><span>EST. 2024</span><strong>KRK</strong><span>FAMILIA</span></div>
+      <div class="stamp"><span id="stamp-top">EST. 2024</span><strong id="stamp-mark">KRK</strong><span id="stamp-bottom">FAMILIA</span></div>
       <a class="scroll-cue" href="#en-vivo">Scroll</a>
     </section>
 
@@ -65,7 +66,7 @@
           <p class="eyebrow">Ahora mismo</p>
           <h2>EN VIVO <em>AHORA</em></h2>
         </div>
-        <p class="block-note">La familia transmite desde el corazón de Dovux.</p>
+        <p id="live-note" class="block-note">La familia transmite desde el corazón de Dovux.</p>
       </div>
       <div id="home-live-picker" class="home-picker"></div>
       <div id="home-live-theater" class="hidden theater-wrap">
@@ -109,11 +110,11 @@
       <p class="eyebrow">Elige tu ruta</p>
       <h2>EXPLORAR <em data-site-name>KRENAK</em></h2>
       <div class="explore">
-        <button type="button" data-goto="personajes"><span>01</span><strong>Personajes</strong><small>Conocé a quienes sostienen el código.</small></button>
-        <button type="button" data-goto="galeria"><span>02</span><strong>Galería</strong><small>El archivo visual del territorio.</small></button>
-        <button type="button" data-goto="videos"><span>03</span><strong>Videos</strong><small>Momentos que quedaron grabados.</small></button>
-        <button type="button" data-goto="lore"><span>04</span><strong>Lore</strong><small>Todo empezó por una razón.</small></button>
-        <button type="button" data-goto="multikick"><span>05</span><strong>MultiKick</strong><small>Varias señales, una familia.</small></button>
+        <button type="button" data-goto="personajes"><span>01</span><strong data-explore-title="personajes">Personajes</strong><small data-explore-text="personajes">Conocé a quienes sostienen el código.</small></button>
+        <button type="button" data-goto="galeria"><span>02</span><strong data-explore-title="galeria">Galería</strong><small data-explore-text="galeria">El archivo visual del territorio.</small></button>
+        <button type="button" data-goto="videos"><span>03</span><strong data-explore-title="videos">Videos</strong><small data-explore-text="videos">Momentos que quedaron grabados.</small></button>
+        <button type="button" data-goto="lore"><span>04</span><strong data-explore-title="lore">Lore</strong><small data-explore-text="lore">Todo empezó por una razón.</small></button>
+        <button type="button" data-goto="multikick"><span>05</span><strong data-explore-title="multikick">MultiKick</strong><small data-explore-text="multikick">Varias señales, una familia.</small></button>
       </div>
     </section>
   </div>
@@ -208,11 +209,12 @@
   <footer class="site-foot">
     <div>
       <strong data-site-name>KRENAK</strong>
-      <span>Territorio, familia y señal.</span>
+      <span id="footer-line">Territorio, familia y señal.</span>
     </div>
     <span id="site-subtitle" class="hidden">DOVUX LIFE RP</span>
-    <span class="foot-mid">Kick · Demanded en X</span>
+    <span id="footer-mid" class="foot-mid">Kick · Demanded en X</span>
     <small>© 2026 KRENAK / DOVUX LIFE RP</small>
+    <a class="foot-admin" href="admin.html">Panel</a>
   </footer>
 
   <div id="live-rotator" class="hidden rotator">

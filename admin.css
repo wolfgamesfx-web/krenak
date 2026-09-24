@@ -30,7 +30,25 @@ body {
 }
 .brand { display: flex; gap: 12px; align-items: center; }
 .brand img { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; }
-.brand strong { display: block; font-family: Outfit, sans-serif; letter-spacing: .04em; }
+.brand strong { display: block; font-family: Anton, sans-serif; letter-spacing: .06em; font-weight: 400; }
+.brand strong:first-letter { color: var(--accent); }
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; padding: 14px 20px 0; }
+.tabs button.on { background: var(--accent); color: #fff; }
+.panel.hidden { display: none; }
+.grid2, .grid3 { display: grid; gap: 12px; }
+.grid2 { grid-template-columns: 1fr 1fr; }
+.grid3 { grid-template-columns: 1fr 1fr 1fr; }
+.stack { display: grid; gap: 12px; }
+.block-edit, .media-edit {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  background: #101014;
+}
+.block-edit textarea { min-height: 90px; }
+input[type=file] { padding: 8px; }
+a.link { text-decoration: none; display: inline-flex; align-items: center; }
 .brand span { color: var(--muted); font-size: 13px; }
 .auth { display: flex; gap: 8px; flex-wrap: wrap; }
 input, textarea, select, button {
@@ -116,8 +134,9 @@ dialog {
 dialog::backdrop { background: rgba(0,0,0,.65); }
 .rank-row input, .link-row input { margin: 0; }
 .dialog-actions { justify-content: flex-end; margin-top: 12px; }
+main { padding: 16px 20px 48px; max-width: 980px; }
 @media (max-width: 900px) {
-  .layout { grid-template-columns: 1fr; }
   .top { flex-direction: column; align-items: stretch; }
   .auth input { width: 100%; }
+  .grid2, .grid3 { grid-template-columns: 1fr; }
 }

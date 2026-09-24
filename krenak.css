@@ -41,6 +41,7 @@ button, a { font: inherit; color: inherit; }
   align-items: center;
   gap: 18px;
 }
+.header-mark { width: 34px; height: 34px; object-fit: contain; flex-shrink: 0; }
 .wordmark {
   border: 0;
   background: none;
@@ -479,6 +480,7 @@ button, a { font: inherit; color: inherit; }
 .site-foot strong:first-letter { color: var(--red); }
 .site-foot span, .site-foot small { display: block; }
 .foot-mid { letter-spacing: .08em; }
+.foot-admin { color: var(--red); letter-spacing: .16em; text-transform: uppercase; font-size: 11px; text-decoration: none; }
 .rotator, .lb { position: fixed; z-index: 40; }
 .lb { inset: 0; background: rgba(0,0,0,.9); display: grid; place-items: center; }
 .lb img { max-width: min(1100px, 92vw); max-height: 80vh; filter: grayscale(1); }

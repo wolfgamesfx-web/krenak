@@ -4,52 +4,109 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Admin · KRENAK</title>
-  <link rel="icon" href="img/logo.png" />
+  <title>Panel · KRENAK</title>
+  <link rel="icon" href="img/logo.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="admin.css" />
 </head>
 <body>
   <header class="top">
     <div class="brand">
-      <img src="img/logo.png" alt="" />
+      <img src="img/logo.svg" alt="" />
       <div>
         <strong>KRENAK</strong>
-        <span>Personajes, fondo y nombre</span>
+        <span>Panel para tocar el sitio</span>
       </div>
     </div>
+    <a class="ghost link" href="index.html">Ver la página</a>
     <div class="auth">
-      <input id="token" type="password" placeholder="Token de GitHub (repo)" autocomplete="off" />
+      <input id="token" type="password" placeholder="Token de GitHub, solo para publicar" autocomplete="off" />
       <button id="connect" type="button">Conectar</button>
       <button id="publish" type="button" class="primary" disabled>Publicar</button>
     </div>
   </header>
 
   <p id="status" class="status" role="status"></p>
+  <nav class="tabs" aria-label="Secciones del panel">
+    <button type="button" class="on" data-panel="sitio">Sitio</button>
+    <button type="button" data-panel="lore">Lore</button>
+    <button type="button" data-panel="galeria">Galería</button>
+    <button type="button" data-panel="videos">Videos</button>
+    <button type="button" data-panel="personajes">Personajes</button>
+  </nav>
 
-  <main class="layout">
-    <section class="card">
-      <h2>Sitio</h2>
-      <label>Nombre<input id="site-name" type="text" /></label>
-      <label>Subtítulo<input id="site-subtitle" type="text" /></label>
-      <label>Línea chica del hero<input id="site-kicker" type="text" /></label>
-      <label>Frase del hero<input id="site-tagline" type="text" /></label>
-      <label>Link de Kick<input id="site-kick" type="text" placeholder="https://kick.com" /></label>
+  <main>
+    <section class="card panel" id="panel-sitio">
+      <h2>Identidad</h2>
+      <div class="grid2">
+        <label>Nombre<input id="site-name" type="text" /></label>
+        <label>Subtítulo<input id="site-subtitle" type="text" /></label>
+        <label>Línea chica del hero<input id="site-kicker" type="text" /></label>
+        <label>Frase del hero<input id="site-tagline" type="text" /></label>
+        <label>Link de Kick<input id="site-kick" type="text" placeholder="https://kick.com/..." /></label>
+        <label>Nota de En vivo<input id="site-live-note" type="text" /></label>
+      </div>
       <label>Descripción<textarea id="site-description" rows="3"></textarea></label>
-      <label>Fondo (ruta o URL)<input id="site-background" type="text" placeholder="img/wallpaper.webp" /></label>
-      <label>Logo (ruta o URL)<input id="site-logo" type="text" placeholder="img/logo.png" /></label>
+      <h3>Sello y pie</h3>
+      <div class="grid3">
+        <label>Sello arriba<input id="stamp-top" type="text" /></label>
+        <label>Sello centro<input id="stamp-mark" type="text" /></label>
+        <label>Sello abajo<input id="stamp-bottom" type="text" /></label>
+        <label>Pie, línea<input id="footer-line" type="text" /></label>
+        <label>Pie, centro<input id="footer-mid" type="text" /></label>
+      </div>
+      <h3>Fondo y logo</h3>
+      <div class="grid2">
+        <label>Fondo (ruta, URL o archivo)
+          <input id="site-background" type="text" placeholder="img/wallpaper.webp" />
+          <input id="site-background-file" type="file" accept="image/*" />
+        </label>
+        <label>Logo (ruta, URL o archivo)
+          <input id="site-logo" type="text" placeholder="img/logo.svg" />
+          <input id="site-logo-file" type="file" accept="image/*,.svg" />
+        </label>
+      </div>
       <div class="preview-row">
         <img id="bg-preview" alt="" />
         <img id="logo-preview" alt="" />
       </div>
+      <h3>Tarjetas de explorar</h3>
+      <div id="explore"></div>
       <h3>Rangos</h3>
       <div id="ranks"></div>
       <button id="add-rank" type="button" class="ghost">Agregar rango</button>
     </section>
 
-    <section class="card">
+    <section class="card panel hidden" id="panel-lore">
+      <div class="row">
+        <h2>Lore</h2>
+        <button id="add-lore" type="button" class="primary">Nuevo capítulo</button>
+      </div>
+      <p class="hint">Cada bloque es un año de la historia. El orden de arriba hacia abajo es el de la página.</p>
+      <div id="lore" class="stack"></div>
+    </section>
+
+    <section class="card panel hidden" id="panel-galeria">
+      <div class="row">
+        <h2>Galería</h2>
+        <button id="add-photo" type="button" class="primary">Nueva foto</button>
+      </div>
+      <p class="hint">Pegá una URL o subí el archivo. El pie es el nombre que se ve sobre la foto.</p>
+      <div id="gallery" class="stack"></div>
+    </section>
+
+    <section class="card panel hidden" id="panel-videos">
+      <div class="row">
+        <h2>Videos</h2>
+        <button id="add-video" type="button" class="primary">Nuevo video</button>
+      </div>
+      <p class="hint">El id es el de YouTube, lo que va después de <code>v=</code>.</p>
+      <div id="videos" class="stack"></div>
+    </section>
+
+    <section class="card panel hidden" id="panel-personajes">
       <div class="row">
         <h2>Personajes</h2>
         <div class="row-actions">
@@ -57,20 +114,23 @@
           <button id="add-person" type="button" class="primary">Nuevo</button>
         </div>
       </div>
-      <p class="hint">La lista pública arranca vacía. Lo que publiques acá reemplaza <code>data.json</code>.</p>
+      <p class="hint">La lista pública arranca vacía. Publicar reemplaza lo que se ve en Personajes.</p>
       <div id="people" class="people"></div>
     </section>
   </main>
 
   <dialog id="editor">
     <form id="editor-form" method="dialog">
-      <h2 id="editor-title">Streamer</h2>
+      <h2 id="editor-title">Personaje</h2>
       <label>Nombre del personaje<input name="nombre" required /></label>
       <label>Nombre real / OOC<input name="ooc" /></label>
       <label>Alias<input name="alias" /></label>
-      <label>Kick (usuario, sin URL)<input name="kick" placeholder="litkillah" /></label>
+      <label>Kick (usuario, sin URL)<input name="kick" placeholder="usuario" /></label>
       <label>Rango<select name="rango" id="editor-rank"></select></label>
-      <label>Foto (ruta o URL)<input name="foto" placeholder="img/foto.jpg" /></label>
+      <label>Foto (ruta, URL o archivo)
+        <input name="foto" placeholder="img/foto.jpg" />
+        <input id="foto-file" type="file" accept="image/*" />
+      </label>
       <label class="check"><input name="activo" type="checkbox" checked /> Visible en la página</label>
       <h3>Links</h3>
       <div id="links"></div>
