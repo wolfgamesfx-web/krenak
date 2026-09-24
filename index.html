@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="krenak.css?v=8" />
+  <link rel="stylesheet" href="krenak.css?v=10" />
   <link rel="preconnect" href="https://player.kick.com">
   <link rel="preload" as="image" href="img/wallpaper.jpg" type="image/jpeg">
 </head>
@@ -232,17 +232,21 @@
   <button type="button" id="to-top" class="to-top" aria-label="Volver arriba">Arriba</button>
 
   <div id="live-rotator" class="hidden rotator">
-    <img id="live-rotator-avatar" alt="" />
-    <div>
-      <strong id="live-rotator-name"></strong>
-      <p id="live-rotator-ooc"></p>
+    <div class="rotator-head">
+      <img id="live-rotator-avatar" alt="" />
+      <div class="rotator-id">
+        <strong id="live-rotator-name"></strong>
+        <p id="live-rotator-ooc"></p>
+      </div>
       <span id="live-rotator-counter"></span>
     </div>
     <iframe id="live-iframe" title="Rotador"></iframe>
-    <a id="live-link" href="#" target="_blank" rel="noreferrer">Kick</a>
-    <button id="live-prev" type="button">‹</button>
-    <button id="live-next" type="button">›</button>
-    <button id="live-close" type="button">Cerrar</button>
+    <div class="rotator-bar">
+      <button id="live-prev" type="button" aria-label="Anterior">‹</button>
+      <a id="live-link" href="#" target="_blank" rel="noreferrer">Kick</a>
+      <button id="live-next" type="button" aria-label="Siguiente">›</button>
+      <button id="live-close" type="button">Cerrar</button>
+    </div>
   </div>
 
   <div id="yy-lightbox" class="hidden lb" role="dialog" aria-modal="true">
@@ -254,6 +258,6 @@
     <a id="yy-dl" download>Descargar</a>
   </div>
 
-  <script defer src="apps.js?v=8"></script>
+  <script defer src="apps.js?v=9"></script>
 </body>
 </html>
