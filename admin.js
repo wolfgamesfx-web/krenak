@@ -42,7 +42,14 @@ function setStatus(msg, kind) {
 }
 
 function token() {
-  return sessionStorage.getItem(TOKEN_KEY) || "";
+  return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || "";
+}
+
+function saveToken(value) {
+  const next = String(value || "").trim();
+  if (!next) return;
+  localStorage.setItem(TOKEN_KEY, next);
+  sessionStorage.removeItem(TOKEN_KEY);
 }
 
 function krenakDb() {
@@ -462,7 +469,7 @@ async function pullFile(path) {
 
 async function connect() {
   const value = tokenInput.value.trim();
-  if (value) sessionStorage.setItem(TOKEN_KEY, value);
+  if (value) saveToken(value);
   if (!token()) {
     setStatus("Sin token igual podés guardar: se ve en este navegador. El token hace falta para que lo vean los demás.", "err");
     return;
@@ -513,6 +520,7 @@ async function persist() {
   publishBtn.disabled = true;
   try {
     await rememberLocal();
+    if (tokenInput.value.trim()) saveToken(tokenInput.value);
     if (!token()) {
       setStatus("Quedó guardado en esta computadora. Abrí la página en este mismo navegador y ya se ve. Para que lo vean los demás, pegá el token arriba, tocá Conectar y volvé a guardar.", "err");
       return;
@@ -596,6 +604,6 @@ loadLocal().then(() => {
     publishBtn.disabled = false;
     setStatus("Token de esta pestaña listo. Conectá si querés traer lo último de GitHub.");
   } else {
-    setStatus("Subí lo que quieras y tocá Guardar en la página. En este navegador se ve al instante.");
+    setStatus("La página ya está publicada. Para que tus cambios los vean todos: Crear token con la cuenta wolfgamesfx-web, pegarlo, y Guardar. Queda en esta computadora.");
   }
 }).catch(err => setStatus(err.message || "No se pudo leer la config", "err"));
