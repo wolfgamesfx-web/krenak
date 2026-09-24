@@ -4,8 +4,8 @@
       name: "KRENAK",
       subtitle: "DOVUX LIFE RP",
       description: "",
-      background: "img/wallpaper.webp",
-      logo: "img/logo.svg",
+      background: "img/wallpaper.jpg",
+      logo: "img/logo-krk.jpg",
       ranks: [
         { id: 1, label: "Jefe" },
         { id: 2, label: "Campera" },
@@ -13,7 +13,7 @@
         { id: 4, label: "Shatei" }
       ]
     };
-    const FALLBACK_AVATAR = 'img/logo.svg';
+    const FALLBACK_AVATAR = 'img/logo-krk.jpg';
 
     function krenakDb() {
       return new Promise((resolve, reject) => {
