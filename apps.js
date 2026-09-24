@@ -1623,8 +1623,8 @@
         if (!label) { label = document.createElement('span'); label.className='kick-label'; el.appendChild(label); }
 
         if (state.live === true) {
-          el.className = 'kick-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border border-yakuza/50 bg-yakuza/10 hover:bg-yakuza/20';
-          dot.className = 'kick-dot kick-dot-live inline-block w-2 h-2 rounded-full bg-yakuza';
+          el.className = 'kick-btn is-live inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs';
+          dot.className = 'kick-dot is-live inline-block w-2 h-2 rounded-full';
           label.textContent = 'En vivo';
         } else if (state.live === false) {
           el.className = 'kick-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border border-neutral-700/50 bg-neutral-800/50 hover:bg-neutral-700/50';
