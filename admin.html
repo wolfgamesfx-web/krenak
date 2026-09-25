@@ -9,9 +9,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=2" />
+  <link rel="stylesheet" href="admin.css?v=3" />
 </head>
 <body>
+  <div id="gate" class="gate">
+    <form id="gate-form">
+      <strong>KRENAK</strong>
+      <p>Entrada del panel. Este enlace no está en la página.</p>
+      <label>Usuario<input id="gate-user" name="user" autocomplete="username" required /></label>
+      <label>Contraseña<input id="gate-pass" name="pass" type="password" autocomplete="current-password" required /></label>
+      <p id="gate-error" class="gate-error" hidden>Usuario o contraseña incorrectos.</p>
+      <button type="submit" class="primary">Entrar</button>
+    </form>
+  </div>
+  <div id="desk" class="is-locked">
   <header class="top">
     <div class="brand">
       <img src="img/logo-krk.jpg" alt="" />
@@ -26,6 +37,7 @@
       <input id="token" type="password" placeholder="Pegá el token, una sola vez" autocomplete="off" />
       <button id="connect" type="button">Conectar</button>
       <button id="publish" type="button" class="primary">Guardar en la página</button>
+      <button id="logout" type="button" class="ghost">Salir</button>
     </div>
   </header>
 
@@ -153,6 +165,7 @@
     </form>
   </dialog>
 
-  <script src="admin.js?v=8"></script>
+  <script src="admin.js?v=9"></script>
+  </div>
 </body>
 </html>
