@@ -2013,29 +2013,77 @@
       }
     }
 
-    async function loadTerritorio() {
+    let territoryItems = [];
+    let territoryFilter = 'todos';
+    let territoryMap = null;
+    let territoryBound = false;
+
+    function bindTerritory() {
+      if (territoryBound) return;
+      territoryBound = true;
+      document.getElementById('place-filters')?.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-tipo]');
+        if (!btn) return;
+        territoryFilter = btn.dataset.tipo;
+        paintTerritorio();
+      });
+      document.getElementById('places')?.addEventListener('click', (e) => {
+        const card = e.target.closest('.place');
+        if (!card || !territoryMap) return;
+        territoryMap.focus(card.dataset.id);
+        document.getElementById('gta-map')?.scrollIntoView({ block: 'nearest' });
+      });
+    }
+
+    function territoryTipo(item) {
+      return (window.KrenakMap && KrenakMap.tipos[item.tipo]) || { label: 'Lugar', color: '#9e2744' };
+    }
+
+    function paintTerritorio() {
       const grid = document.getElementById('places');
       const empty = document.getElementById('places-empty');
+      const filters = document.getElementById('place-filters');
+      bindTerritory();
+      if (!territoryMap && window.KrenakMap) territoryMap = KrenakMap.mount('gta-map');
+      const items = territoryItems.filter(p => territoryFilter === 'todos' || (p.tipo || 'territorio') === territoryFilter);
+      if (filters) {
+        const used = territoryItems.length ? ['todos', ...new Set(territoryItems.map(p => p.tipo || 'territorio'))] : [];
+        filters.innerHTML = used.map(key => {
+          const label = key === 'todos' ? 'Todos' : ((window.KrenakMap && KrenakMap.tipos[key]) || { label: 'Lugar' }).label;
+          return `<button type="button" class="chip${key === territoryFilter ? ' on' : ''}" data-tipo="${escapeHtml(key)}">${escapeHtml(label)}</button>`;
+        }).join('');
+      }
+      if (territoryMap) {
+        territoryMap.setPlaces(items);
+        territoryMap.invalidate();
+      }
+      if (!grid) return;
+      if (!territoryItems.length) {
+        grid.innerHTML = '';
+        empty?.classList.remove('hidden');
+        return;
+      }
+      empty?.classList.add('hidden');
+      grid.innerHTML = items.map(p => {
+        const tipo = territoryTipo(p);
+        return `
+        <article class="place" data-id="${escapeHtml(p.id || '')}" style="border-left-color:${tipo.color}">
+          <span class="place-type" style="color:${tipo.color}">${escapeHtml(tipo.label)}</span>
+          <strong>${escapeHtml(p.nombre)}</strong>
+          ${p.nota ? `<p>${escapeHtml(p.nota)}</p>` : ''}
+        </article>`;
+      }).join('');
+    }
+
+    async function loadTerritorio() {
       let items = [];
       try {
         const bundled = window.__krenakBundle?.territorio;
         items = Array.isArray(bundled) ? bundled : await fetchJson('territorio.json');
       } catch { items = []; }
       if (!Array.isArray(items)) items = [];
-      items = items.filter(p => String(p.nombre || '').trim());
-      if (!grid) return;
-      if (!items.length) {
-        grid.innerHTML = '';
-        empty?.classList.remove('hidden');
-        return;
-      }
-      empty?.classList.add('hidden');
-      grid.innerHTML = items.map(p => `
-        <article class="place">
-          <strong>${escapeHtml(p.nombre)}</strong>
-          ${p.nota ? `<p>${escapeHtml(p.nota)}</p>` : ''}
-        </article>
-      `).join('');
+      territoryItems = items.filter(p => String(p.nombre || '').trim() || (Array.isArray(p.puntos) && p.puntos.length));
+      paintTerritorio();
     }
 
     let clipsListenersBound = false;

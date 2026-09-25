@@ -18,7 +18,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="krenak.css?v=14" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="krenak.css?v=16" />
   <link rel="preconnect" href="https://player.kick.com">
   <link rel="preload" as="image" href="img/wallpaper.jpg" type="image/jpeg">
 </head>
@@ -204,8 +205,10 @@
     <section class="block">
       <p class="eyebrow">Dovux</p>
       <h2>EL <em>TERRITORIO</em></h2>
+      <div id="place-filters" class="chips"></div>
+      <div id="gta-map" class="gta-map"></div>
       <div id="places" class="places"></div>
-      <p id="places-empty" class="empty hidden">Todavía no hay lugares cargados. Se suman desde el panel.</p>
+      <p id="places-empty" class="empty hidden">El mapa está listo. Las zonas las marca la administración.</p>
     </section>
   </div>
 
@@ -280,6 +283,8 @@
     <a id="yy-dl" download>Descargar</a>
   </div>
 
-  <script defer src="apps.js?v=11"></script>
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script defer src="krenak-map.js?v=5"></script>
+  <script defer src="apps.js?v=13"></script>
 </body>
 </html>

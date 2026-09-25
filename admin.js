@@ -63,6 +63,7 @@ let people = [];
 let gallery = [];
 let videos = [];
 let territorio = [];
+let zoneMap = null;
 let shas = {};
 let editing = -1;
 
@@ -187,10 +188,24 @@ function readSiteForm() {
     if (row.querySelector("[data-f=clip]")?.checked) item.clip = true;
     return item;
   }).filter(item => item.id);
-  territorio = [...document.querySelectorAll(".place-edit")].map(row => ({
-    nombre: row.querySelector("[data-f=nombre]").value.trim(),
-    nota: row.querySelector("[data-f=nota]").value.trim()
-  })).filter(item => item.nombre);
+  readPlacesFromDom();
+}
+
+function readPlacesFromDom() {
+  territorio = [...document.querySelectorAll(".place-edit")].map(row => {
+    let puntos = [];
+    try { puntos = JSON.parse(row.dataset.puntos || "[]"); } catch { puntos = []; }
+    if (!Array.isArray(puntos)) puntos = [];
+    const nombre = row.querySelector("[data-f=nombre]").value.trim();
+    return {
+      id: row.dataset.id || crypto.randomUUID(),
+      nombre: nombre || (puntos.length ? "Sin nombre" : ""),
+      nota: row.querySelector("[data-f=nota]").value.trim(),
+      tipo: row.querySelector("[data-f=tipo]")?.value || "territorio",
+      forma: row.dataset.forma || (puntos.length > 1 ? "polygon" : "marker"),
+      puntos
+    };
+  }).filter(item => item.nombre || item.puntos.length);
 }
 
 function fillSiteForm() {
@@ -334,25 +349,84 @@ function videoRow(item = { id: "", title: "", published: "", _channelName: "" })
 function renderTerritorio() {
   const box = document.getElementById("territorio");
   if (!box) return;
+  territorio = (territorio || []).map(item => ({
+    id: item.id || crypto.randomUUID(),
+    nombre: item.nombre || "",
+    nota: item.nota || "",
+    tipo: item.tipo || "territorio",
+    forma: item.forma || "",
+    puntos: Array.isArray(item.puntos) ? item.puntos : []
+  }));
   box.innerHTML = "";
   if (!territorio.length) {
-    box.innerHTML = `<p class="hint">Todavía no hay lugares.</p>`;
-    return;
+    box.innerHTML = `<p class="hint">Todavía no hay zonas. Dibujalas en el mapa.</p>`;
+  } else {
+    territorio.forEach(item => box.appendChild(placeRow(item)));
   }
-  territorio.forEach(item => box.appendChild(placeRow(item)));
+  if (zoneMap) zoneMap.setPlaces(territorio);
 }
 
-function placeRow(item = { nombre: "", nota: "" }) {
+function placeRow(item = { nombre: "", nota: "", tipo: "territorio", forma: "", puntos: [] }) {
   const row = document.createElement("div");
   row.className = "place-edit block-edit";
+  row.dataset.id = item.id || crypto.randomUUID();
+  row.dataset.forma = item.forma || "";
+  row.dataset.puntos = JSON.stringify(item.puntos || []);
+  const tipos = window.KrenakMap ? KrenakMap.tipos : { territorio: { label: "Territorio" } };
+  const options = Object.entries(tipos).map(([key, tipo]) =>
+    `<option value="${key}"${(item.tipo || "territorio") === key ? " selected" : ""}>${tipo.label}</option>`
+  ).join("");
+  const where = (item.puntos || []).length
+    ? ((item.forma === "marker" || item.puntos.length === 1) ? "Marca en el mapa" : "Zona en el mapa")
+    : "Sin marca en el mapa";
   row.innerHTML = `
     <div class="grid2">
-      <label>Lugar<input data-f="nombre" value="${escapeAttr(item.nombre)}" placeholder="Nombre de la calle o el punto" /></label>
-      <button type="button" class="ghost">Quitar</button>
+      <label>Lugar<input data-f="nombre" value="${escapeAttr(item.nombre)}" placeholder="Nombre de la zona" /></label>
+      <label>Tipo<select data-f="tipo">${options}</select></label>
     </div>
-    <label>Nota<textarea data-f="nota">${escapeAttr(item.nota)}</textarea></label>`;
-  row.querySelector("button").onclick = () => { row.remove(); persist(); };
+    <label>Nota<textarea data-f="nota">${escapeAttr(item.nota)}</textarea></label>
+    <div class="row">
+      <span class="hint">${where}</span>
+      <button type="button" class="ghost">Quitar</button>
+    </div>`;
+  const refreshMap = () => {
+    readPlacesFromDom();
+    zoneMap?.setPlaces(territorio);
+  };
+  row.querySelector("button").onclick = () => { row.remove(); refreshMap(); persist(); };
+  row.querySelector("[data-f=tipo]").onchange = refreshMap;
+  row.querySelector("[data-f=nombre]").addEventListener("change", refreshMap);
   return row;
+}
+
+function ensureZoneMap() {
+  if (!window.KrenakMap) return;
+  if (!zoneMap) {
+    zoneMap = KrenakMap.mount("admin-map", { draw: true });
+    if (!zoneMap) return;
+    zoneMap.onCreated((shape) => {
+      readPlacesFromDom();
+      const tipo = document.getElementById("draw-tipo")?.value || "territorio";
+      territorio.push({
+        id: crypto.randomUUID(),
+        nombre: "",
+        nota: "",
+        tipo,
+        forma: shape.forma,
+        puntos: shape.puntos
+      });
+      renderTerritorio();
+    });
+  }
+  zoneMap.setPlaces(territorio);
+  setTimeout(() => zoneMap.invalidate(), 40);
+}
+
+function drawKind(kind) {
+  ensureZoneMap();
+  const tipo = document.getElementById("draw-tipo")?.value || "territorio";
+  const color = (KrenakMap.tipos[tipo] || KrenakMap.tipos.otro).color;
+  zoneMap.draw(kind, color);
 }
 
 function renderPeople() {
@@ -501,11 +575,9 @@ document.getElementById("add-video").onclick = () => {
   box.querySelector(".hint")?.remove();
   box.appendChild(videoRow());
 };
-document.getElementById("add-place").onclick = () => {
-  const box = document.getElementById("territorio");
-  box.querySelector(".hint")?.remove();
-  box.appendChild(placeRow());
-};
+document.getElementById("draw-zone").onclick = () => drawKind("polygon");
+document.getElementById("draw-rect").onclick = () => drawKind("rect");
+document.getElementById("draw-mark").onclick = () => drawKind("marker");
 document.getElementById("foto-file").addEventListener("change", async (e) => {
   const file = e.target.files?.[0];
   if (!file) return;
@@ -527,6 +599,7 @@ document.querySelectorAll(".tabs button").forEach(btn => {
     document.querySelectorAll(".panel").forEach(panel => {
       panel.classList.toggle("hidden", panel.id !== `panel-${btn.dataset.panel}`);
     });
+    if (btn.dataset.panel === "territorio") ensureZoneMap();
   };
 });
 

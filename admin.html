@@ -9,7 +9,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=3" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+  <link rel="stylesheet" href="admin.css?v=4" />
 </head>
 <body>
   <div id="gate" class="gate">
@@ -123,9 +125,23 @@
     <section class="card panel hidden" id="panel-territorio">
       <div class="row">
         <h2>Territorio</h2>
-        <button id="add-place" type="button" class="primary">Nuevo lugar</button>
       </div>
-      <p class="hint">Cada lugar es un punto de Dovux que es de la familia. Nombre y una nota corta.</p>
+      <p class="hint">Elegí el tipo, dibujá la zona o poné una marca en Los Santos, y completá el nombre. Después Guardar en la página.</p>
+      <div class="map-tools">
+        <label>Tipo
+          <select id="draw-tipo">
+            <option value="territorio">Territorio</option>
+            <option value="almacen">Almacén</option>
+            <option value="casa">Casa</option>
+            <option value="negocio">Negocio</option>
+            <option value="otro">Otro</option>
+          </select>
+        </label>
+        <button id="draw-zone" type="button" class="primary">Dibujar zona</button>
+        <button id="draw-rect" type="button" class="ghost">Rectángulo</button>
+        <button id="draw-mark" type="button" class="ghost">Poner marca</button>
+      </div>
+      <div id="admin-map" class="gta-map"></div>
       <div id="territorio" class="stack"></div>
     </section>
 
@@ -165,7 +181,10 @@
     </form>
   </dialog>
 
-  <script src="admin.js?v=9"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+  <script src="krenak-map.js?v=5"></script>
+  <script src="admin.js?v=10"></script>
   </div>
 </body>
 </html>
