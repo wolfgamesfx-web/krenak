@@ -760,7 +760,7 @@
     })();
 
     // ===== Tabs =====
-    const VIEWS = ['inicio','personajes','galeria','videos','lore','multikick'];
+    const VIEWS = ['inicio','personajes','galeria','videos','clips','territorio','lore','multikick'];
     const TAB_ACTIVE   = 'tab tab-active';
     const TAB_INACTIVE = 'tab';
 
@@ -841,6 +841,8 @@
       if (v === 'personajes') { render(); }
       if (v === 'galeria') { loadGallery(); }
       if (v === 'videos') { loadVideos(); }
+      if (v === 'clips') { loadClips(); }
+      if (v === 'territorio') { loadTerritorio(); }
       if (v === 'lore') {
         loadLore().then(() => requestAnimationFrame(refreshLoreReveal));
       }
@@ -1646,7 +1648,9 @@
     }
     // ===== Galería =====
     let galleryLoaded = false;
-    let YY_GALLERY = [];    // [{src, alt}]
+    let YY_GALLERY = [];
+    let YY_LIGHT = [];
+    let galleryAlbum = "";
     let YY_INDEX = 0;
     let galleryLastFetch = 0;
     let galleryListenersBound = false;
@@ -1656,7 +1660,8 @@
       const force = options.force === true;
       const now = Date.now();
     
-      if (!force && galleryLoaded && YY_GALLERY.length && (now - galleryLastFetch) < GALLERY_TTL) {
+      if (!force && galleryLoaded && (now - galleryLastFetch) < GALLERY_TTL) {
+        paintGallery();
         return;
       }
     
@@ -1664,67 +1669,85 @@
         await loadSite();
         const bundledGallery = window.__krenakBundle?.gallery;
         YY_GALLERY = Array.isArray(bundledGallery) ? bundledGallery : await fetchJson('gallery.json');
-    
-        const html = YY_GALLERY.map((i, idx) => {
-          const id = driveIdFrom(i.src) || i.id;
-          const thumb = id ? driveThumb(id) : (i.src || "");
-          const alt = i.alt || "";
-          const altEsc = escapeHtml(alt);
-          return `
-            <figure class="gallery-item relative group overflow-hidden cursor-zoom-in aspect-square bg-neutral-900/50" tabindex="0">
-              <a href="${id ? driveDL(id) : (safeUrl(i.src) || '#')}" download
-                 class="yy-dl-btn text-neutral-200 hover:text-white" title="Descargar" aria-label="Descargar">
-                <svg class="yy-dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M12 3v12"/>
-                  <path d="m7 11 5 5 5-5"/>
-                  <path d="M5 21h14"/>
-                </svg>
-              </a>
-              <img src="${thumb}" alt="${altEsc}"
-                   class="yy-zoomable w-full h-full object-cover"
-                   loading="lazy" decoding="async"
-                   data-idx="${idx}" data-id="${id || ""}">
-              ${alt ? `<figcaption class="gallery-caption">${altEsc}</figcaption>` : ''}
-            </figure>
-          `;
-        }).join('');
-    
-        const grid = document.getElementById('galeria-grid');
-        grid.innerHTML = html || '<p class="empty">La galería está vacía. Las fotos del territorio se suman desde el panel.</p>';
+        if (!Array.isArray(YY_GALLERY)) YY_GALLERY = [];
         galleryLoaded = true;
         galleryLastFetch = now;
-    
-        // ðŸ”½ Fallback si alguna miniatura no carga
-        document.querySelectorAll('#galeria-grid img').forEach(img => {
-          img.addEventListener('error', () => {
-            try {
-              const id = new URL(img.src).pathname.split('/d/')[1]?.split('=')[0] 
-                         || new URL(img.src).searchParams.get('id');
-              if (id) img.src = `https://lh3.googleusercontent.com/d/${id}=w1600`;
-            } catch {}
-          });
-        });
-    
-        // ðŸ”½ Listener para abrir el lightbox al click
-        if (!galleryListenersBound) {
-          grid.addEventListener('click', (e) => {
-            const img = e.target.closest('img[data-idx]');
-            if (!img) return;
-            e.preventDefault();
-            const i = Number(img.dataset.idx || 0);
-            yyOpen(i);
-          });
-          galleryListenersBound = true;
-        }
-    
+        paintGallery();
       } catch (e) {
         document.getElementById('galeria-grid').innerHTML =
           '<div class="text-red-400">No se pudo cargar <code>gallery.json</code>.</div>';
       }
     }
+
+    function paintGallery() {
+      const albums = [...new Set(YY_GALLERY.map(i => String(i.album || "").trim()).filter(Boolean))];
+      const chips = document.getElementById("album-chips");
+      if (chips) {
+        chips.innerHTML = albums.length
+          ? ["", ...albums].map(name => `<button type="button" class="chip${galleryAlbum === name ? " on" : ""}" data-album="${escapeHtml(name)}">${name ? escapeHtml(name) : "Todos"}</button>`).join("")
+          : "";
+      }
+      YY_LIGHT = YY_GALLERY
+        .map((item, idx) => ({ item, idx }))
+        .filter(({ item }) => !galleryAlbum || String(item.album || "").trim() === galleryAlbum)
+        .map(({ item }) => item);
+
+      const html = YY_LIGHT.map((i, idx) => {
+        const id = driveIdFrom(i.src) || i.id;
+        const thumb = id ? driveThumb(id) : (i.src || "");
+        const alt = i.alt || "";
+        const altEsc = escapeHtml(alt);
+        return `
+          <figure class="gallery-item relative group overflow-hidden cursor-zoom-in aspect-square bg-neutral-900/50" tabindex="0">
+            <a href="${id ? driveDL(id) : (safeUrl(i.src) || '#')}" download
+               class="yy-dl-btn text-neutral-200 hover:text-white" title="Descargar" aria-label="Descargar">
+              <svg class="yy-dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3v12"/>
+                <path d="m7 11 5 5 5-5"/>
+                <path d="M5 21h14"/>
+              </svg>
+            </a>
+            <img src="${thumb}" alt="${altEsc}"
+                 class="yy-zoomable w-full h-full object-cover"
+                 loading="lazy" decoding="async"
+                 data-idx="${idx}" data-id="${id || ""}">
+            ${alt ? `<figcaption class="gallery-caption">${altEsc}</figcaption>` : ''}
+          </figure>
+        `;
+      }).join('');
+
+      const grid = document.getElementById('galeria-grid');
+      grid.innerHTML = html || '<p class="empty">La galería está vacía. Las fotos se suman desde el panel, y el álbum las agrupa.</p>';
+
+      document.querySelectorAll('#galeria-grid img').forEach(img => {
+        img.addEventListener('error', () => {
+          try {
+            const id = new URL(img.src).pathname.split('/d/')[1]?.split('=')[0]
+                       || new URL(img.src).searchParams.get('id');
+            if (id) img.src = `https://lh3.googleusercontent.com/d/${id}=w1600`;
+          } catch {}
+        });
+      });
+
+      if (!galleryListenersBound) {
+        grid.addEventListener('click', (e) => {
+          const img = e.target.closest('img[data-idx]');
+          if (!img) return;
+          e.preventDefault();
+          yyOpen(Number(img.dataset.idx || 0));
+        });
+        document.getElementById("album-chips")?.addEventListener("click", (e) => {
+          const chip = e.target.closest("[data-album]");
+          if (!chip) return;
+          galleryAlbum = chip.dataset.album || "";
+          paintGallery();
+        });
+        galleryListenersBound = true;
+      }
+    }
    
     function yyRender() {
-      const item = YY_GALLERY[YY_INDEX];
+      const item = YY_LIGHT[YY_INDEX];
       if (!item) return;
     
       // intentamos ID desde el DOM (data-id) o URL original
@@ -1770,7 +1793,7 @@
     }
 
     function yyOpen(i=0) {
-      YY_INDEX = Math.max(0, Math.min(i, YY_GALLERY.length-1));
+      YY_INDEX = Math.max(0, Math.min(i, YY_LIGHT.length - 1));
       yyRender();
       const lb = document.getElementById('yy-lightbox');
       yyFocusReturn = document.activeElement;
@@ -1792,8 +1815,8 @@
       if (yyFocusReturn?.focus) yyFocusReturn.focus();
       yyFocusReturn = null;
     }
-    function yyPrev() { if (!YY_GALLERY.length) return; YY_INDEX = (YY_INDEX - 1 + YY_GALLERY.length) % YY_GALLERY.length; yyRender(); }
-    function yyNext() { if (!YY_GALLERY.length) return; YY_INDEX = (YY_INDEX + 1) % YY_GALLERY.length; yyRender(); }
+    function yyPrev() { if (!YY_LIGHT.length) return; YY_INDEX = (YY_INDEX - 1 + YY_LIGHT.length) % YY_LIGHT.length; yyRender(); }
+    function yyNext() { if (!YY_LIGHT.length) return; YY_INDEX = (YY_INDEX + 1) % YY_LIGHT.length; yyRender(); }
     function yyKeys(e) {
       if (e.key === 'Escape') yyClose();
       if (e.key === 'ArrowLeft') yyPrev();
@@ -1902,9 +1925,10 @@
     }
 
     function renderVideosGrid(items) {
+      const longs = items.filter(v => !v.clip);
       const filtered = videoEditorFilter
-        ? items.filter(v => v._channelName === videoEditorFilter)
-        : items;
+        ? longs.filter(v => v._channelName === videoEditorFilter)
+        : longs;
 
       const grid = document.getElementById('videos-grid');
       const empty = document.getElementById('videos-empty');
@@ -1967,6 +1991,54 @@
       wrap.appendChild(iframe);
       facade.replaceWith(wrap);
     }
+
+    async function loadClips() {
+      const items = (await getVideosList()).filter(v => v.clip);
+      const grid = document.getElementById('clips-grid');
+      const empty = document.getElementById('clips-empty');
+      if (!grid) return;
+      if (!items.length) {
+        grid.innerHTML = '';
+        empty?.classList.remove('hidden');
+      } else {
+        empty?.classList.add('hidden');
+        grid.innerHTML = items.map((v, i) => renderVideoCard(v, i)).join('');
+      }
+      if (!clipsListenersBound) {
+        grid.addEventListener('click', (e) => {
+          const facade = e.target.closest('.video-facade');
+          if (facade) mountVideoPlayer(facade);
+        });
+        clipsListenersBound = true;
+      }
+    }
+
+    async function loadTerritorio() {
+      const grid = document.getElementById('places');
+      const empty = document.getElementById('places-empty');
+      let items = [];
+      try {
+        const bundled = window.__krenakBundle?.territorio;
+        items = Array.isArray(bundled) ? bundled : await fetchJson('territorio.json');
+      } catch { items = []; }
+      if (!Array.isArray(items)) items = [];
+      items = items.filter(p => String(p.nombre || '').trim());
+      if (!grid) return;
+      if (!items.length) {
+        grid.innerHTML = '';
+        empty?.classList.remove('hidden');
+        return;
+      }
+      empty?.classList.add('hidden');
+      grid.innerHTML = items.map(p => `
+        <article class="place">
+          <strong>${escapeHtml(p.nombre)}</strong>
+          ${p.nota ? `<p>${escapeHtml(p.nota)}</p>` : ''}
+        </article>
+      `).join('');
+    }
+
+    let clipsListenersBound = false;
 
     async function loadVideos() {
       try {

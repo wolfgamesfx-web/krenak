@@ -33,6 +33,7 @@ let site = {
 let people = [];
 let gallery = [];
 let videos = [];
+let territorio = [];
 let shas = {};
 let editing = -1;
 
@@ -144,14 +145,23 @@ function readSiteForm() {
   })).filter(item => item.title || item.body);
   gallery = [...document.querySelectorAll(".gallery-edit")].map(row => ({
     src: row.querySelector("[data-f=src]").value.trim(),
-    alt: row.querySelector("[data-f=alt]").value.trim()
+    alt: row.querySelector("[data-f=alt]").value.trim(),
+    album: row.querySelector("[data-f=album]").value.trim()
   })).filter(item => item.src);
-  videos = [...document.querySelectorAll(".video-edit")].map(row => ({
-    id: row.querySelector("[data-f=id]").value.trim(),
-    title: row.querySelector("[data-f=title]").value.trim(),
-    published: row.querySelector("[data-f=published]").value.trim(),
-    _channelName: row.querySelector("[data-f=channel]").value.trim()
-  })).filter(item => item.id);
+  videos = [...document.querySelectorAll(".video-edit")].map(row => {
+    const item = {
+      id: row.querySelector("[data-f=id]").value.trim(),
+      title: row.querySelector("[data-f=title]").value.trim(),
+      published: row.querySelector("[data-f=published]").value.trim(),
+      _channelName: row.querySelector("[data-f=channel]").value.trim()
+    };
+    if (row.querySelector("[data-f=clip]")?.checked) item.clip = true;
+    return item;
+  }).filter(item => item.id);
+  territorio = [...document.querySelectorAll(".place-edit")].map(row => ({
+    nombre: row.querySelector("[data-f=nombre]").value.trim(),
+    nota: row.querySelector("[data-f=nota]").value.trim()
+  })).filter(item => item.nombre);
 }
 
 function fillSiteForm() {
@@ -177,6 +187,7 @@ function fillSiteForm() {
   renderLore();
   renderGallery();
   renderVideos();
+  renderTerritorio();
 }
 
 function renderRanks() {
@@ -193,13 +204,17 @@ function renderRanks() {
 
 function renderExplore() {
   const box = document.getElementById("explore");
-  const items = site.explore?.length ? site.explore : [
-    { view: "personajes", title: "Personajes", text: "" },
-    { view: "galeria", title: "Galería", text: "" },
-    { view: "videos", title: "Videos", text: "" },
-    { view: "lore", title: "Lore", text: "" },
-    { view: "multikick", title: "MultiKick", text: "" }
+  const defaults = [
+    { view: "personajes", title: "Personajes", text: "Conocé a quienes sostienen el código." },
+    { view: "galeria", title: "Galería", text: "El archivo visual del territorio." },
+    { view: "videos", title: "Videos", text: "Momentos que quedaron grabados." },
+    { view: "clips", title: "Clips", text: "Cortes cortos para mirar y pasar." },
+    { view: "territorio", title: "Territorio", text: "Las calles que son de la familia." },
+    { view: "lore", title: "Lore", text: "Todo empezó por una razón." },
+    { view: "multikick", title: "MultiKick", text: "Varias señales, una familia." }
   ];
+  const saved = new Map((site.explore || []).map(item => [item.view, item]));
+  const items = defaults.map(item => ({ ...item, ...(saved.get(item.view) || {}) }));
   box.innerHTML = "";
   items.forEach(item => {
     const row = document.createElement("div");
@@ -250,6 +265,7 @@ function galleryRow(item = { src: "", alt: "" }) {
     <label>Imagen<input data-f="src" value="${escapeAttr(item.src)}" /></label>
     <input data-file type="file" accept="image/*" />
     <label>Pie<input data-f="alt" value="${escapeAttr(item.alt)}" /></label>
+    <label>Álbum<input data-f="album" value="${escapeAttr(item.album)}" placeholder="Sesión, evento…" /></label>
     <button type="button" class="ghost">Quitar</button>`;
   row.querySelector("[data-file]").addEventListener("change", async (e) => {
     const file = e.target.files?.[0];
@@ -280,7 +296,32 @@ function videoRow(item = { id: "", title: "", published: "", _channelName: "" })
       <label>Fecha<input data-f="published" value="${escapeAttr(item.published)}" placeholder="2026-09-24T00:00:00Z" /></label>
       <label>Canal<input data-f="channel" value="${escapeAttr(item._channelName)}" /></label>
     </div>
+    <label class="check"><input data-f="clip" type="checkbox"${item.clip ? " checked" : ""} /> Es un clip. Sale en Clips, no en Videos.</label>
     <button type="button" class="ghost">Quitar</button>`;
+  row.querySelector("button").onclick = () => { row.remove(); persist(); };
+  return row;
+}
+
+function renderTerritorio() {
+  const box = document.getElementById("territorio");
+  if (!box) return;
+  box.innerHTML = "";
+  if (!territorio.length) {
+    box.innerHTML = `<p class="hint">Todavía no hay lugares.</p>`;
+    return;
+  }
+  territorio.forEach(item => box.appendChild(placeRow(item)));
+}
+
+function placeRow(item = { nombre: "", nota: "" }) {
+  const row = document.createElement("div");
+  row.className = "place-edit block-edit";
+  row.innerHTML = `
+    <div class="grid2">
+      <label>Lugar<input data-f="nombre" value="${escapeAttr(item.nombre)}" placeholder="Nombre de la calle o el punto" /></label>
+      <button type="button" class="ghost">Quitar</button>
+    </div>
+    <label>Nota<textarea data-f="nota">${escapeAttr(item.nota)}</textarea></label>`;
   row.querySelector("button").onclick = () => { row.remove(); persist(); };
   return row;
 }
@@ -431,6 +472,11 @@ document.getElementById("add-video").onclick = () => {
   box.querySelector(".hint")?.remove();
   box.appendChild(videoRow());
 };
+document.getElementById("add-place").onclick = () => {
+  const box = document.getElementById("territorio");
+  box.querySelector(".hint")?.remove();
+  box.appendChild(placeRow());
+};
 document.getElementById("foto-file").addEventListener("change", async (e) => {
   const file = e.target.files?.[0];
   if (!file) return;
@@ -471,16 +517,18 @@ async function loadJson(path, fallback) {
 }
 
 async function loadLocal() {
-  const [siteJson, dataJson, galleryJson, videosJson] = await Promise.all([
+  const [siteJson, dataJson, galleryJson, videosJson, territorioJson] = await Promise.all([
     loadJson("site.json", null),
     loadJson("data.json", []),
     loadJson("gallery.json", []),
-    loadJson("videos.json", [])
+    loadJson("videos.json", []),
+    loadJson("territorio.json", [])
   ]);
   if (siteJson) site = siteJson;
   people = Array.isArray(dataJson) ? dataJson : [];
   gallery = Array.isArray(galleryJson) ? galleryJson : [];
   videos = Array.isArray(videosJson) ? videosJson : [];
+  territorio = Array.isArray(territorioJson) ? territorioJson : [];
 }
 
 async function pullFile(path) {
@@ -501,9 +549,11 @@ async function connect() {
   people = await pullFile("data.json");
   gallery = await pullFile("gallery.json");
   videos = await pullFile("videos.json");
+  try { territorio = await pullFile("territorio.json"); } catch { territorio = []; }
   if (!Array.isArray(people)) people = [];
   if (!Array.isArray(gallery)) gallery = [];
   if (!Array.isArray(videos)) videos = [];
+  if (!Array.isArray(territorio)) territorio = [];
   publishBtn.disabled = false;
   fillSiteForm();
   renderPeople();
@@ -534,7 +584,7 @@ async function materialize(value, name) {
 }
 
 async function rememberLocal() {
-  await idbSet("bundle", { site, people, gallery, videos, savedAt: Date.now() });
+  await idbSet("bundle", { site, people, gallery, videos, territorio, savedAt: Date.now() });
 }
 
 let persistChain = Promise.resolve();
@@ -582,6 +632,7 @@ async function publish() {
     await saveFile("data.json", JSON.stringify(people, null, 2) + "\n", "Actualiza personajes");
     await saveFile("gallery.json", JSON.stringify(gallery, null, 2) + "\n", "Actualiza galeria");
     await saveFile("videos.json", JSON.stringify(videos, null, 2) + "\n", "Actualiza videos");
+    await saveFile("territorio.json", JSON.stringify(territorio, null, 2) + "\n", "Actualiza territorio");
     fillSiteForm();
     await rememberLocal();
     setStatus("Guardado. La página ya lo muestra en este navegador y en uno o dos minutos lo ven todos.", "ok");

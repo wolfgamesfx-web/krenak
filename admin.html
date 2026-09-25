@@ -35,6 +35,7 @@
     <button type="button" data-panel="lore">Lore</button>
     <button type="button" data-panel="galeria">Galería</button>
     <button type="button" data-panel="videos">Videos</button>
+    <button type="button" data-panel="territorio">Territorio</button>
     <button type="button" data-panel="personajes">Personajes</button>
   </nav>
 
@@ -94,7 +95,7 @@
         <h2>Galería</h2>
         <button id="add-photo" type="button" class="primary">Nueva foto</button>
       </div>
-      <p class="hint">Pegá una URL o subí el archivo. El pie es el nombre que se ve sobre la foto.</p>
+      <p class="hint">Pegá una URL o subí el archivo. El álbum agrupa las fotos de una sesión o un evento. Si lo dejás vacío, la foto queda en Todos.</p>
       <div id="gallery" class="stack"></div>
     </section>
 
@@ -103,8 +104,17 @@
         <h2>Videos</h2>
         <button id="add-video" type="button" class="primary">Nuevo video</button>
       </div>
-      <p class="hint">El id es el de YouTube, lo que va después de <code>v=</code>.</p>
+      <p class="hint">El id es el de YouTube, lo que va después de <code>v=</code>. Si marcás Clip, el corte sale en Clips y no en Videos.</p>
       <div id="videos" class="stack"></div>
+    </section>
+
+    <section class="card panel hidden" id="panel-territorio">
+      <div class="row">
+        <h2>Territorio</h2>
+        <button id="add-place" type="button" class="primary">Nuevo lugar</button>
+      </div>
+      <p class="hint">Cada lugar es un punto de Dovux que es de la familia. Nombre y una nota corta.</p>
+      <div id="territorio" class="stack"></div>
     </section>
 
     <section class="card panel hidden" id="panel-personajes">
@@ -143,6 +153,6 @@
     </form>
   </dialog>
 
-  <script src="admin.js?v=7"></script>
+  <script src="admin.js?v=8"></script>
 </body>
 </html>
