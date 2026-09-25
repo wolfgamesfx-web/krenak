@@ -38,5 +38,15 @@
     "foto": "img/uploads/persona-4-1790290355327.jpg",
     "activo": 1,
     "links": []
+  },
+  {
+    "nombre": "Luzak",
+    "ooc": "",
+    "alias": "Duxon",
+    "kick": "duxontv",
+    "rango": 2,
+    "foto": "img/uploads/persona-5-1790304934614.jpg",
+    "activo": 1,
+    "links": []
   }
 ]
