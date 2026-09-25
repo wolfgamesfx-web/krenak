@@ -35,6 +35,25 @@ body {
 .tabs { display: flex; gap: 8px; flex-wrap: wrap; padding: 14px 20px 0; }
 .tabs button.on { background: var(--accent); color: #fff; }
 .panel.hidden { display: none; }
+#desk.is-locked, #gate.is-locked { display: none; }
+.gate {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+.gate form {
+  width: min(380px, 100%);
+  display: grid;
+  gap: 12px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  padding: 28px 22px;
+}
+.gate strong { letter-spacing: .18em; font-size: 22px; }
+.gate strong:first-letter { color: var(--accent); }
+.gate p { margin: 0; color: var(--muted); }
+.gate-error { color: var(--accent-2); }
 .grid2, .grid3 { display: grid; gap: 12px; }
 .grid2 { grid-template-columns: 1fr 1fr; }
 .grid3 { grid-template-columns: 1fr 1fr 1fr; }

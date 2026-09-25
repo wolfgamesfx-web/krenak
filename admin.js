@@ -1,6 +1,35 @@
 const REPO = "wolfgamesfx-web/krenak";
 const BRANCH = "preview";
 const TOKEN_KEY = "yy_admin_token";
+const GATE_USER = "krenak";
+const GATE_HASH = "e54174cf58cc55a22f61a479058cd08b736669085144f86cd60c46117cbfe2ef";
+const GATE_KEY = "yy_admin_gate";
+
+async function sha256(text) {
+  const data = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest("SHA-256", data);
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+function openDesk() {
+  document.getElementById("gate").classList.add("is-locked");
+  document.getElementById("desk").classList.remove("is-locked");
+}
+
+function bootDesk() {
+  loadLocal().then(() => {
+    fillSiteForm();
+    renderPeople();
+    const saved = token();
+    if (saved) {
+      tokenInput.value = saved;
+      publishBtn.disabled = false;
+      setStatus("Token de esta pestaña listo. Conectá si querés traer lo último de GitHub.");
+    } else {
+      setStatus("La página ya está publicada. Para que tus cambios los vean todos: Crear token con la cuenta wolfgamesfx-web, pegarlo, y Guardar. Queda en esta computadora.");
+    }
+  }).catch(err => setStatus(err.message || "No se pudo leer la config", "err"));
+}
 
 const statusEl = document.getElementById("status");
 const tokenInput = document.getElementById("token");
@@ -662,6 +691,25 @@ document.getElementById("connect").onclick = () => {
   connect().catch(err => setStatus(err.message || "No conectó", "err"));
 };
 document.getElementById("publish").onclick = () => persist();
+document.getElementById("logout").onclick = () => {
+  sessionStorage.removeItem(GATE_KEY);
+  location.reload();
+};
+document.getElementById("gate-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const user = document.getElementById("gate-user").value.trim().toLowerCase();
+  const pass = document.getElementById("gate-pass").value;
+  const hash = await sha256(pass);
+  const error = document.getElementById("gate-error");
+  if (user === GATE_USER && hash === GATE_HASH) {
+    error.hidden = true;
+    sessionStorage.setItem(GATE_KEY, "1");
+    openDesk();
+    bootDesk();
+    return;
+  }
+  error.hidden = false;
+});
 document.getElementById("import-legacy").onclick = async () => {
   const res = await fetch("data.legacy.json", { cache: "no-cache" });
   if (!res.ok) {
@@ -675,15 +723,7 @@ document.getElementById("import-legacy").onclick = async () => {
   setStatus(`Roster anterior cargado (${people.length}). Todavía no está publicado.`, "ok");
 };
 
-loadLocal().then(() => {
-  fillSiteForm();
-  renderPeople();
-  const saved = token();
-  if (saved) {
-    tokenInput.value = saved;
-    publishBtn.disabled = false;
-    setStatus("Token de esta pestaña listo. Conectá si querés traer lo último de GitHub.");
-  } else {
-    setStatus("La página ya está publicada. Para que tus cambios los vean todos: Crear token con la cuenta wolfgamesfx-web, pegarlo, y Guardar. Queda en esta computadora.");
-  }
-}).catch(err => setStatus(err.message || "No se pudo leer la config", "err"));
+if (sessionStorage.getItem(GATE_KEY) === "1") {
+  openDesk();
+  bootDesk();
+}
