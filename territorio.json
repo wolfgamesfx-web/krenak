@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "id": "df1c6834-14d9-4bed-a8ab-1e2222db596a",
+    "nombre": "BARRIO",
+    "nota": "ACA VIVEN LOS MAS PIJUDOS ASHEEEEE",
+    "tipo": "territorio",
+    "forma": "polygon",
+    "puntos": [
+      [
+        -1023.2,
+        -1276.6
+      ],
+      [
+        -978.1,
+        -1356.8
+      ],
+      [
+        -846.3,
+        -1310.6
+      ],
+      [
+        -847.4,
+        -1183.2
+      ]
+    ]
+  }
+]
