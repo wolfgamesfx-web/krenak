@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="krenak.css?v=13" />
+  <link rel="stylesheet" href="krenak.css?v=14" />
   <link rel="preconnect" href="https://player.kick.com">
   <link rel="preload" as="image" href="img/wallpaper.jpg" type="image/jpeg">
 </head>
@@ -36,6 +36,8 @@
         <button class="tab" data-view="personajes">Personajes</button>
         <button class="tab" data-view="galeria">Galería</button>
         <button class="tab" data-view="videos">Videos</button>
+        <button class="tab" data-view="clips">Clips</button>
+        <button class="tab" data-view="territorio">Territorio</button>
         <button class="tab" data-view="lore">Lore</button>
         <button class="tab" data-view="multikick">Multikick</button>
         <a id="header-kick" class="kick-cta" href="https://kick.com" target="_blank" rel="noreferrer"><span class="kick-mark">K</span> Ver en Kick</a>
@@ -115,8 +117,10 @@
         <button type="button" data-goto="personajes"><span>01</span><strong data-explore-title="personajes">Personajes</strong><small data-explore-text="personajes">Conocé a quienes sostienen el código.</small></button>
         <button type="button" data-goto="galeria"><span>02</span><strong data-explore-title="galeria">Galería</strong><small data-explore-text="galeria">El archivo visual del territorio.</small></button>
         <button type="button" data-goto="videos"><span>03</span><strong data-explore-title="videos">Videos</strong><small data-explore-text="videos">Momentos que quedaron grabados.</small></button>
-        <button type="button" data-goto="lore"><span>04</span><strong data-explore-title="lore">Lore</strong><small data-explore-text="lore">Todo empezó por una razón.</small></button>
-        <button type="button" data-goto="multikick"><span>05</span><strong data-explore-title="multikick">MultiKick</strong><small data-explore-text="multikick">Varias señales, una familia.</small></button>
+        <button type="button" data-goto="clips"><span>04</span><strong data-explore-title="clips">Clips</strong><small data-explore-text="clips">Cortes cortos para mirar y pasar.</small></button>
+        <button type="button" data-goto="territorio"><span>05</span><strong data-explore-title="territorio">Territorio</strong><small data-explore-text="territorio">Las calles que son de la familia.</small></button>
+        <button type="button" data-goto="lore"><span>06</span><strong data-explore-title="lore">Lore</strong><small data-explore-text="lore">Todo empezó por una razón.</small></button>
+        <button type="button" data-goto="multikick"><span>07</span><strong data-explore-title="multikick">MultiKick</strong><small data-explore-text="multikick">Varias señales, una familia.</small></button>
       </div>
     </section>
 
@@ -172,6 +176,7 @@
     <section class="block">
       <p class="eyebrow">Archivo visual</p>
       <h2>GALERÍA <em>DE CALLE</em></h2>
+      <div id="album-chips" class="chips"></div>
       <div id="galeria-grid" class="gallery"></div>
     </section>
   </div>
@@ -183,6 +188,24 @@
       <select id="videos-editor" class="videos-filter" aria-label="Canal"></select>
       <div id="videos-grid" class="videos"></div>
       <p id="videos-empty" class="empty hidden">No hay videos cargados.</p>
+    </section>
+  </div>
+
+  <div id="view-clips" class="hidden">
+    <section class="block">
+      <p class="eyebrow">Cortes</p>
+      <h2>CLIPS <em>DE LA FAMILIA</em></h2>
+      <div id="clips-grid" class="videos"></div>
+      <p id="clips-empty" class="empty hidden">Todavía no hay clips. Los cortes cortos se marcan en el panel.</p>
+    </section>
+  </div>
+
+  <div id="view-territorio" class="hidden">
+    <section class="block">
+      <p class="eyebrow">Dovux</p>
+      <h2>EL <em>TERRITORIO</em></h2>
+      <div id="places" class="places"></div>
+      <p id="places-empty" class="empty hidden">Todavía no hay lugares cargados. Se suman desde el panel.</p>
     </section>
   </div>
 
@@ -258,6 +281,6 @@
     <a id="yy-dl" download>Descargar</a>
   </div>
 
-  <script defer src="apps.js?v=10"></script>
+  <script defer src="apps.js?v=11"></script>
 </body>
 </html>
