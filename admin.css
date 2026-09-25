@@ -13,7 +13,7 @@ body {
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
-  font-family: Manrope, system-ui, sans-serif;
+  font-family: "Sofia Sans", system-ui, sans-serif;
 }
 .top {
   display: flex;
@@ -30,7 +30,7 @@ body {
 }
 .brand { display: flex; gap: 12px; align-items: center; }
 .brand img { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; }
-.brand strong { display: block; font-family: "Cormorant Garamond", Georgia, serif; letter-spacing: .18em; font-weight: 600; text-transform: uppercase; }
+.brand strong { display: block; font-family: "Sofia Sans", system-ui, sans-serif; letter-spacing: .16em; font-weight: 600; text-transform: uppercase; }
 .brand strong:first-letter { color: var(--accent); }
 .tabs { display: flex; gap: 8px; flex-wrap: wrap; padding: 14px 20px 0; }
 .tabs button.on { background: var(--accent); color: #fff; }
@@ -89,7 +89,7 @@ button:disabled { opacity: .45; cursor: not-allowed; }
   border-radius: 16px;
   padding: 16px;
 }
-h2, h3 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600; letter-spacing: .04em; margin: 0 0 12px; }
+h2, h3 { font-family: "Sofia Sans", system-ui, sans-serif; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 12px; }
 h3 { margin-top: 18px; font-size: 15px; }
 label { display: grid; gap: 6px; margin-bottom: 12px; font-size: 13px; color: var(--muted); }
 .preview-row { display: flex; gap: 10px; }
