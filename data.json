@@ -78,5 +78,15 @@
     "foto": "",
     "activo": 1,
     "links": []
+  },
+  {
+    "nombre": "NxBraian",
+    "ooc": "",
+    "alias": "Negro",
+    "kick": "nxbraian",
+    "rango": 3,
+    "foto": "img/uploads/persona-9-1790321202857.jpg",
+    "activo": 1,
+    "links": []
   }
 ]
