@@ -20,15 +20,15 @@
     },
     {
       "id": 2,
-      "label": "Campera"
+      "label": "Sub Jefe"
     },
     {
       "id": 3,
-      "label": "Krenak"
+      "label": "OG´S"
     },
     {
       "id": 4,
-      "label": "Shatei"
+      "label": "Camello"
     }
   ],
   "explore": [
@@ -46,6 +46,16 @@
       "view": "videos",
       "title": "Videos",
       "text": "Momentos que quedaron grabados."
+    },
+    {
+      "view": "clips",
+      "title": "Clips",
+      "text": "Cortes cortos para mirar y pasar."
+    },
+    {
+      "view": "territorio",
+      "title": "Territorio",
+      "text": "Las calles que son de la familia."
     },
     {
       "view": "lore",
