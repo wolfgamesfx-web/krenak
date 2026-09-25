@@ -456,7 +456,27 @@ button, a { font: inherit; color: inherit; }
   text-shadow: 0 2px 10px #000;
 }
 .videos { grid-template-columns: repeat(3, 1fr); }
-.places { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.places { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 16px; }
+.gta-map {
+  height: 72vh;
+  min-height: 520px;
+  background: #3e5260;
+  border: 1px solid var(--line);
+  isolation: isolate;
+}
+.gta-map .leaflet-popup-content-wrapper,
+.gta-map .leaflet-popup-tip {
+  background: #121212;
+  color: #f4f1ea;
+  border-radius: 0;
+  box-shadow: none;
+}
+.gta-map .leaflet-popup-content { margin: 12px 14px; font-family: var(--sans); }
+.gta-map .leaflet-popup-content strong { letter-spacing: .04em; }
+.gta-map .leaflet-bar a { background: #121212; color: #f4f1ea; border-color: var(--line); }
+#place-filters { margin: 8px 0 12px; }
+.place { cursor: pointer; border-left: 3px solid var(--red); }
+.place-type { display: block; margin-bottom: 8px; color: var(--red); letter-spacing: .16em; text-transform: uppercase; font-size: 11px; }
 .place {
   border: 1px solid var(--line);
   background: #0e0e0e;
@@ -864,6 +884,7 @@ button, a { font: inherit; color: inherit; }
     animation: menu-in .28s ease;
   }
   .explore, .roster, .videos, .mk-standby, .places { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gta-map { height: 62vh; min-height: 380px; }
   .gallery, .live-theater-grid, .lore-row, .block-head, .site-foot { grid-template-columns: 1fr; display: grid; }
   .stamp, .scroll-cue, .hero-corners { display: none; }
   .code-band ol { grid-template-columns: 1fr; }

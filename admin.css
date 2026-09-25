@@ -170,6 +170,12 @@ dialog::backdrop { background: rgba(0,0,0,.65); }
 .person span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .person button { position: relative; z-index: 1; flex: 0 0 auto; }
 main { padding: 16px 20px 48px; max-width: 980px; }
+.map-tools { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 12px; }
+.map-tools label { display: grid; gap: 6px; font-size: 12px; color: var(--muted); }
+.map-tools select { background: #101014; color: var(--text); border: 1px solid var(--line); padding: 10px 12px; }
+.gta-map { height: 560px; background: #3e5260; border: 1px solid var(--line); isolation: isolate; margin-bottom: 16px; }
+.gta-map .leaflet-bar a { background: #16161d; color: var(--text); border-color: var(--line); }
+.gta-map .leaflet-popup-content-wrapper, .gta-map .leaflet-popup-tip { background: #16161d; color: var(--text); border-radius: 0; }
 @media (max-width: 900px) {
   .top { flex-direction: column; align-items: stretch; }
   .auth input { width: 100%; }
