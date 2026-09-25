@@ -879,8 +879,13 @@
       document.querySelectorAll("[data-site-name]").forEach(el => { el.textContent = name; });
       const heroTitle = document.getElementById("hero-title");
       const wordmark = document.getElementById("site-name");
-      if (heroTitle) heroTitle.textContent = name;
-      if (wordmark) wordmark.textContent = name;
+      const paintMark = (el) => {
+        if (!el) return;
+        const raw = String(name || "KRENAK").trim();
+        el.innerHTML = `<span class="mark-k">${escapeHtml(raw.slice(0, 1))}</span><span class="mark-rest">${escapeHtml(raw.slice(1))}</span>`;
+      };
+      paintMark(heroTitle);
+      paintMark(wordmark);
       const kicker = document.getElementById("hero-kicker");
       if (kicker && site.kicker) kicker.textContent = site.kicker;
       const tagline = document.getElementById("hero-tagline");
