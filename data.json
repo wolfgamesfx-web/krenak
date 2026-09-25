@@ -48,5 +48,15 @@
     "foto": "img/uploads/persona-5-1790304934614.jpg",
     "activo": 1,
     "links": []
+  },
+  {
+    "nombre": "Dritan Kastrati",
+    "ooc": "",
+    "alias": "Homeroo",
+    "kick": "homeroo",
+    "rango": 3,
+    "foto": "img/uploads/persona-6-1790304968773.jpg",
+    "activo": 1,
+    "links": []
   }
 ]
