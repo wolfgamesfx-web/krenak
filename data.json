@@ -58,5 +58,15 @@
     "foto": "img/uploads/persona-6-1790304968773.jpg",
     "activo": 1,
     "links": []
+  },
+  {
+    "nombre": "Kol Muça",
+    "ooc": "",
+    "alias": "Dani",
+    "kick": "danielevga",
+    "rango": 3,
+    "foto": "img/uploads/persona-7-1790305025012.jpg",
+    "activo": 1,
+    "links": []
   }
 ]
