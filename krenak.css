@@ -1,7 +1,7 @@
 :root {
   --bg: #070707;
-  --red: #e10600;
-  --red-2: #ff3b30;
+  --red: #9e2744;
+  --red-2: #c44d68;
   --paper: #f4f1ea;
   --muted: #9a9a9a;
   --line: rgba(255,255,255,.08);
@@ -20,7 +20,7 @@ body.krenak {
   overflow-x: hidden;
 }
 body.krenak::-webkit-scrollbar { width: 8px; height: 8px; display: block; }
-body.krenak::-webkit-scrollbar-thumb { background: #3a1212; border-radius: 8px; }
+body.krenak::-webkit-scrollbar-thumb { background: #3a1822; border-radius: 8px; }
 button, a { font: inherit; color: inherit; }
 .hidden { display: none !important; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
@@ -104,7 +104,7 @@ button, a { font: inherit; color: inherit; }
   bottom: 0;
   height: 2px;
   background: var(--red) !important;
-  box-shadow: 0 0 12px rgba(225,6,0,.7) !important;
+  box-shadow: 0 0 12px rgba(158,39,68,.7) !important;
   transform: scaleX(1);
 }
 .krenak .header-nav .tab:after {
@@ -142,7 +142,7 @@ button, a { font: inherit; color: inherit; }
 .kick-cta:hover, .btn-red:hover {
   background: var(--red-2);
   transform: translateY(-1px);
-  box-shadow: 0 8px 22px rgba(225,6,0,.35);
+  box-shadow: 0 8px 22px rgba(158,39,68,.35);
 }
 .kick-mark {
   width: 16px;
@@ -287,7 +287,7 @@ button, a { font: inherit; color: inherit; }
   line-height: 1.15;
   transform: rotate(8deg);
   animation: stamp-in .8s ease .4s both;
-  box-shadow: inset 0 0 0 4px rgba(225,6,0,.15);
+  box-shadow: inset 0 0 0 4px rgba(158,39,68,.15);
 }
 .stamp strong { font-family: var(--serif); font-weight: 600; font-size: 22px; letter-spacing: .12em; }
 .scroll-cue {
@@ -353,7 +353,7 @@ button, a { font: inherit; color: inherit; }
 }
 .explore button:hover {
   transform: translateY(-6px);
-  border-color: rgba(225,6,0,.45);
+  border-color: rgba(158,39,68,.45);
   background: #161616;
 }
 .explore button:hover:before { transform: scaleY(1); }
@@ -385,7 +385,7 @@ button, a { font: inherit; color: inherit; }
 }
 .krenak .char-card:hover {
   transform: translateY(-6px);
-  border-color: rgba(225,6,0,.4) !important;
+  border-color: rgba(158,39,68,.4) !important;
   box-shadow: 0 16px 40px rgba(0,0,0,.45);
 }
 .krenak .char-card .char-photo {
@@ -400,21 +400,21 @@ button, a { font: inherit; color: inherit; }
   transform: none !important;
 }
 .krenak .char-card.is-live {
-  border-color: rgba(225, 6, 0, .55) !important;
+  border-color: rgba(158, 39, 68, .55) !important;
 }
 .krenak .char-card.is-live .char-photo {
   filter: none !important;
 }
 .krenak .kick-btn.is-live {
-  background: #6e1010 !important;
-  border: 1px solid #e10600 !important;
+  background: #5c1c30 !important;
+  border: 1px solid #9e2744 !important;
   color: #ffd2d0 !important;
-  box-shadow: 0 0 14px rgba(225, 6, 0, .28);
+  box-shadow: 0 0 14px rgba(158, 39, 68, .28);
 }
 .krenak .kick-btn.is-live .kick-dot,
 .krenak .kick-dot.is-live {
-  background: #e10600 !important;
-  box-shadow: 0 0 8px #e10600;
+  background: #9e2744 !important;
+  box-shadow: 0 0 8px #9e2744;
 }
 .char-meta { padding: 12px 12px 14px; background: #101010; }
 .char-name {
@@ -498,7 +498,7 @@ button, a { font: inherit; color: inherit; }
   outline: none;
 }
 .filters input { flex: 1; min-width: 220px; }
-.filters input:focus, .filters select:focus, .videos-filter:focus { border-color: rgba(225,6,0,.7); }
+.filters input:focus, .filters select:focus, .videos-filter:focus { border-color: rgba(158,39,68,.7); }
 .chip {
   background: #141414;
   color: #ddd;
@@ -510,7 +510,7 @@ button, a { font: inherit; color: inherit; }
   cursor: pointer;
   transition: background .2s ease, border-color .2s ease, color .2s ease;
 }
-.chip:hover { border-color: rgba(225,6,0,.5); }
+.chip:hover { border-color: rgba(158,39,68,.5); }
 .chip.on { background: var(--red); border-color: var(--red); color: #fff; }
 
 .theater-wrap { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; }
@@ -605,7 +605,7 @@ button, a { font: inherit; color: inherit; }
   position: absolute;
   width: 36px;
   height: 36px;
-  border: 1px solid rgba(225,6,0,.75);
+  border: 1px solid rgba(158,39,68,.75);
   pointer-events: none;
 }
 .hero-corners span:nth-child(1) { top: 96px; left: 28px; border-right: 0; border-bottom: 0; }
@@ -637,7 +637,7 @@ button, a { font: inherit; color: inherit; }
 .code-band strong { display: block; font-family: var(--serif); font-size: 26px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
 .code-band small { display: block; margin-top: 8px; color: var(--muted); font-size: 14px; line-height: 1.45; }
 .scroll-progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 50; pointer-events: none; }
-.scroll-progress span { display: block; height: 100%; width: 100%; background: var(--red); transform: scaleX(0); transform-origin: left; box-shadow: 0 0 12px rgba(225,6,0,.8); }
+.scroll-progress span { display: block; height: 100%; width: 100%; background: var(--red); transform: scaleX(0); transform-origin: left; box-shadow: 0 0 12px rgba(158,39,68,.8); }
 .to-top {
   position: fixed;
   right: 22px;
@@ -665,7 +665,7 @@ button, a { font: inherit; color: inherit; }
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(225,6,0,.85), transparent);
+  background: linear-gradient(90deg, transparent, rgba(158,39,68,.85), transparent);
   animation: scan 2.6s ease-out .35s both;
   pointer-events: none;
 }
@@ -691,7 +691,7 @@ button, a { font: inherit; color: inherit; }
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(225,6,0,.28), transparent);
+  background: linear-gradient(90deg, transparent, rgba(158,39,68,.28), transparent);
   animation: sheen 1.35s ease infinite;
 }
 .chip, .filters input, .filters select, .videos-filter { transition: border-color .2s ease, background .2s ease, transform .2s ease; }
@@ -757,7 +757,7 @@ button, a { font: inherit; color: inherit; }
   justify-content: center;
   text-decoration: none;
 }
-.rotator-bar a { background: #6e1010; border-color: #e10600; }
+.rotator-bar a { background: #5c1c30; border-color: #9e2744; }
 
 @keyframes rise {
   from { opacity: 0; transform: translateY(16px); }
@@ -801,8 +801,8 @@ button, a { font: inherit; color: inherit; }
   100% { transform: scaleY(.2); transform-origin: bottom; opacity: .3; }
 }
 @keyframes pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(225,6,0,.45); }
-  50% { box-shadow: 0 0 0 6px rgba(225,6,0,0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(158,39,68,.45); }
+  50% { box-shadow: 0 0 0 6px rgba(158,39,68,0); }
 }
 
 @media (min-width: 981px) {

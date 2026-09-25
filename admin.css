@@ -4,8 +4,8 @@
   --line: rgba(255,255,255,.1);
   --text: #f4f4f5;
   --muted: #a1a1aa;
-  --accent: #e10600;
-  --accent-2: #ff4d4d;
+  --accent: #9e2744;
+  --accent-2: #c44d68;
 }
 * { box-sizing: border-box; }
 body {
