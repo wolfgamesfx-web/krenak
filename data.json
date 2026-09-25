@@ -68,5 +68,15 @@
     "foto": "img/uploads/persona-7-1790305025012.jpg",
     "activo": 1,
     "links": []
+  },
+  {
+    "nombre": "Nasser",
+    "ooc": "",
+    "alias": "JuniorDeus",
+    "kick": "juniordeus",
+    "rango": 3,
+    "foto": "",
+    "activo": 1,
+    "links": []
   }
 ]
